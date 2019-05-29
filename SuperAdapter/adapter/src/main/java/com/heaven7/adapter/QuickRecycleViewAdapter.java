@@ -406,6 +406,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
      * @param item the item
      * @param itemLayoutId the layoutId
      * @param helper the view helper.
+     * @since 1.8.9
      */
     protected void onBindData(Context context, int position, T item, int itemLayoutId, ViewHelper2 helper){
 
