@@ -27,6 +27,10 @@ public class ViewHelper2 extends ViewHelper {
 	public ViewHelper2(View root){
 		super(root);
 	}
+
+	protected ViewHelperImpl2 locateView(int viewId){
+		return (ViewHelperImpl2) mImpl.view(getView(viewId));
+	}
 	@Override
 	protected ViewHelperImpl onCreateViewHelper() {
 		return new ViewHelperImpl2();
@@ -237,39 +241,38 @@ public class ViewHelper2 extends ViewHelper {
 	}
 
 	//-------------------------- new 1.8.9 -----------------------------------
-
-	public ViewHelper2 setImageTintColor(int color){
-		return ((ViewHelperImpl2)mImpl).setImageTintColor(color).reverse(this);
+	public ViewHelper2 setImageTintColor(int viewId, int color){
+		return locateView(viewId).setImageTintColor(color).reverse(this);
 	}
-	public ViewHelper2 setImageTintList(@Nullable ColorStateList tint){
-		return ((ViewHelperImpl2)mImpl).setImageTintList(tint).reverse(this);
+	public ViewHelper2 setImageTintList(int viewId, @Nullable ColorStateList tint){
+		return locateView(viewId).setImageTintList(tint).reverse(this);
 	}
-	public ViewHelper2 setImageTintMode(PorterDuff.Mode mode){
-		return ((ViewHelperImpl2)mImpl).setImageTintMode(mode).reverse(this);
+	public ViewHelper2 setImageTintMode(int viewId, PorterDuff.Mode mode){
+		return locateView(viewId).setImageTintMode(mode).reverse(this);
 	}
-	public ViewHelper2 setBackgroundTintColor(int color){
-		return ((ViewHelperImpl2)mImpl).setBackgroundTintColor(color).reverse(this);
+	public ViewHelper2 setBackgroundTintColor(int viewId, int color){
+		return locateView(viewId).setBackgroundTintColor(color).reverse(this);
 	}
-	public ViewHelper2 setBackgroundTintList(@Nullable ColorStateList tint){
-		return ((ViewHelperImpl2)mImpl).setBackgroundTintList(tint).reverse(this);
+	public ViewHelper2 setBackgroundTintList(int viewId, @Nullable ColorStateList tint){
+		return locateView(viewId).setBackgroundTintList(tint).reverse(this);
 	}
-	public ViewHelper2 setBackgroundTintMode(PorterDuff.Mode mode){
-		return ((ViewHelperImpl2)mImpl).setBackgroundTintMode(mode).reverse(this);
+	public ViewHelper2 setBackgroundTintMode(int viewId, PorterDuff.Mode mode){
+		return locateView(viewId).setBackgroundTintMode(mode).reverse(this);
 	}
-	public ViewHelper2 setForegroundTintList(@Nullable ColorStateList tint){
-		return ((ViewHelperImpl2)mImpl).setForegroundTintList(tint).reverse(this);
+	public ViewHelper2 setForegroundTintList(int viewId, @Nullable ColorStateList tint){
+		return locateView(viewId).setForegroundTintList(tint).reverse(this);
 	}
-	public ViewHelper2 setForegroundTintMode(PorterDuff.Mode mode){
-		return ((ViewHelperImpl2)mImpl).setForegroundTintMode(mode).reverse(this);
+	public ViewHelper2 setForegroundTintMode(int viewId, PorterDuff.Mode mode){
+		return locateView(viewId).setForegroundTintMode(mode).reverse(this);
 	}
-	public ViewHelper2 setElevation(float evevation){
-		return ((ViewHelperImpl2)mImpl).setElevation(evevation).reverse(this);
+	public ViewHelper2 setElevation(int viewId, float evevation){
+		return locateView(viewId).setElevation(evevation).reverse(this);
 	}
-	public ViewHelper2 setClipToOutline(boolean clipToOutline){
-		return ((ViewHelperImpl2)mImpl).setClipToOutline(clipToOutline).reverse(this);
+	public ViewHelper2 setClipToOutline(int viewId, boolean clipToOutline){
+		return locateView(viewId).setClipToOutline(clipToOutline).reverse(this);
 	}
-	public ViewHelper2 setOutlineProvider(ViewOutlineProvider provider){
-		return ((ViewHelperImpl2)mImpl).setOutlineProvider(provider).reverse(this);
+	public ViewHelper2 setOutlineProvider(int viewId, ViewOutlineProvider provider){
+		return locateView(viewId).setOutlineProvider(provider).reverse(this);
 	}
 
 }
