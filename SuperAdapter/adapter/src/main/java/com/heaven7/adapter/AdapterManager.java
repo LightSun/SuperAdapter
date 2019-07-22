@@ -180,7 +180,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
      * @since 2.0.3
      */
     public void moveItem(int fromPos, int toPos){
-        T t = mDatas.get(fromPos);
+        T t = mDatas.remove(fromPos);
         mDatas.add(toPos, t);
         notifyItemMoved(fromPos, toPos);
     }
