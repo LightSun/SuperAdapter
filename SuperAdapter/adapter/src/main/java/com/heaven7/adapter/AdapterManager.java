@@ -173,6 +173,18 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
     }
     //================== manage item ===============================
 
+    /**
+     * move item from position to another position
+     * @param fromPos the from position
+     * @param toPos the to position.
+     * @since 2.0.3
+     */
+    public void moveItem(int fromPos, int toPos){
+        T t = mDatas.get(fromPos);
+        mDatas.add(toPos, t);
+        notifyItemMoved(fromPos, toPos);
+    }
+
     public void addItem(int index, T item) {
         mDatas.add(index, item);
         if (isRecyclable()) {
