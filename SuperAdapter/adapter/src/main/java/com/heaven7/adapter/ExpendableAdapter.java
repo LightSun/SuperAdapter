@@ -81,19 +81,19 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
                 childStartIndex = ei.getChildItemCount();
             }
             ei.addChildItems(childStartIndex, list);
+            final int preCount = getPreCount(parentPos);
             if(ei.isExpended()){
                 int itemCount = ei.getChildItemCount();
-                final int preCount = getPreCount(parentPos);
                 notifyItemRangeInserted(preCount + 1 + childStartIndex, list.size());
-                if(notifyParent){
-                    notifyItemChanged(preCount);
-                }
                 if(notifyAfter){
                     int mayChangCount = itemCount - 1 - childStartIndex;
                     if(mayChangCount > 0){
                         notifyItemRangeChanged(preCount + 1 + childStartIndex + list.size(), mayChangCount);
                     }
                 }
+            }
+            if(notifyParent){
+                notifyItemChanged(preCount);
             }
             return true;
         }
