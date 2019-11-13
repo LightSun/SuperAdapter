@@ -160,6 +160,7 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
                 ei.setExpended(false);
 
                 final int preCount = getPreCount(parentPos);
+                notifyItemChanged(preCount);
                 notifyItemRangeRemoved(preCount + 1, ei.getChildItemCount());
                 return true;
             }
@@ -180,6 +181,7 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
             if (!ei.isExpended()) {
                 ei.setExpended(true);
                 final int preCount = getPreCount(parentPos);
+                notifyItemChanged(preCount);
                 notifyItemRangeInserted(preCount + 1, ei.getChildItemCount());
                 return true;
             }
