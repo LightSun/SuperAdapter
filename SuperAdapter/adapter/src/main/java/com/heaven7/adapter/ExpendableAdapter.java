@@ -48,16 +48,46 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
         mDatas.addAll(list);
         notifyItemRangeInserted(oldSize + getHeaderSize(), deltaSize);
     }
-    public boolean addChildItems(int parentPos, int childStartIndex, List<?> list, boolean notifyAfter){
+    /**
+     *  add child items.
+     * @param parentPos the parent pos
+     * @param list the list
+     * @param notifyParent true to notify parent
+     * @return true if add success
+     * @since 2.0.5-beta2
+     */
+    public boolean addChildItems(int parentPos, List<?> list, boolean notifyParent){
+        return addChildItems(parentPos, -1, list,  notifyParent, false);
+    }
+    public boolean addChildItems(int parentPos, int childStartIndex, List<?> list,  boolean notifyParent){
+        return addChildItems(parentPos, childStartIndex, list,  notifyParent, false);
+    }
+    /**
+     *  add child items.
+     * @param parentPos the parent pos
+     * @param childStartIndex the child start index
+     * @param list the list
+     * @param notifyParent true to notify parent
+     * @param notifyAfter true to notify after positions
+     * @return true if add success
+     * @since 2.0.5-beta2
+     */
+    public boolean addChildItems(int parentPos, int childStartIndex, List<?> list, boolean notifyParent, boolean notifyAfter){
         T item = getItem(parentPos);
         if(item instanceof ExpendableItem){
             ExpendableItem ei = (ExpendableItem) item;
+            //-1 mean add to last
+            if(childStartIndex == -1){
+                childStartIndex = ei.getChildItemCount();
+            }
             ei.addChildItems(childStartIndex, list);
             if(ei.isExpended()){
                 int itemCount = ei.getChildItemCount();
                 final int preCount = getPreCount(parentPos);
                 notifyItemRangeInserted(preCount + 1 + childStartIndex, list.size());
-
+                if(notifyParent){
+                    notifyItemChanged(preCount);
+                }
                 if(notifyAfter){
                     int mayChangCount = itemCount - 1 - childStartIndex;
                     if(mayChangCount > 0){
