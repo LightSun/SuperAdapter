@@ -11,6 +11,7 @@ public class TestMainActivity extends AbsMainActivity {
     protected void addDemos(List<ActivityInfo> list) {
         list.add(new ActivityInfo(TestQtActivity.class));
         list.add(new ActivityInfo(AudioFxDemo.class));
+        list.add(new ActivityInfo(TestExpendAdapterActivity.class));
     }
 
 

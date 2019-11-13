@@ -36,13 +36,11 @@ import java.util.List;
  *
  * @param <T> the data
  */
-public abstract class QuickRecycleViewAdapter<T extends ISelectable>
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+public abstract class QuickRecycleViewAdapter<T extends ISelectable> extends HeaderFooterAdapter
         implements AdapterManager.IAdapterManagerCallback, AdapterManager.IHeaderFooterManager,
-        AdapterManager.IAdapterManagerCallback2 {
+        AdapterManager.IAdapterManagerCallback2, HeaderFooterAdapter.Callback {
 
     private int mLayoutId = 0;
-    private HeaderFooterHelper mHeaderFooterHelper;
     private AdapterManager<T> mAdapterManager;
 
     /**
@@ -72,6 +70,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
      * internal
      */
     QuickRecycleViewAdapter(int layoutId, List<T> mDatas, int selectMode, boolean callFinalInit) {
+        super();
         if (layoutId < 0) {
             throw new IllegalArgumentException("layoutId can't be negative ");
         }
@@ -86,8 +85,13 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         if (callFinalInit) {
             onFinalInit();
         }
+        setCallback(this);
     }
 
+    @Override
+    public int getActuallyItemSize() {
+        return mAdapterManager.getItemSize();
+    }
 
     /**
      * called before {@link #notifyDataSetChanged()}
@@ -111,67 +115,6 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     protected void onFinalInit() {
 
     }
-
-    //=================== start header footer view ======================= //
-    @Override
-    public void addHeaderView(View v) {
-        if (mHeaderFooterHelper == null)
-            mHeaderFooterHelper = new HeaderFooterHelper();
-        int headerSize = getHeaderSize();
-        mHeaderFooterHelper.addHeaderView(v);
-        notifyItemInserted(headerSize);
-    }
-
-    @Override
-    public void removeHeaderView(View v) {
-        if (mHeaderFooterHelper != null) {
-            int index = mHeaderFooterHelper.removeHeaderView(v);
-            if (index != -1) {
-                notifyItemRemoved(index);
-            }
-        }
-    }
-
-    @Override
-    public void addFooterView(View v) {
-        if (mHeaderFooterHelper == null)
-            mHeaderFooterHelper = new HeaderFooterHelper();
-        int itemCount = getItemCount();
-        mHeaderFooterHelper.addFooterView(v);
-        notifyItemInserted(itemCount);
-    }
-
-    @Override
-    public void removeFooterView(View v) {
-        if (mHeaderFooterHelper != null) {
-            int index = mHeaderFooterHelper.removeFooterView(v);
-            if (index != -1) {
-                notifyItemRemoved(index + getHeaderSize() + mAdapterManager.getItemSize());
-            }
-        }
-    }
-
-    @Override
-    public int getHeaderSize() {
-        return mHeaderFooterHelper == null ? 0 : mHeaderFooterHelper.getHeaderViewSize();
-    }
-
-    @Override
-    public int getFooterSize() {
-        return mHeaderFooterHelper == null ? 0 : mHeaderFooterHelper.getFooterViewSize();
-    }
-
-    @Override
-    public boolean isHeader(int position) {
-        return mHeaderFooterHelper != null && mHeaderFooterHelper.isInHeader(position);
-    }
-
-    @Override
-    public boolean isFooter(int position) {
-        return mHeaderFooterHelper != null && mHeaderFooterHelper.isInFooter(position, mAdapterManager.getItemSize());
-    }
-    // =================== end header footer view ======================= //
-
 
     @Override
     public final boolean isRecyclable() {
@@ -263,19 +206,6 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
 
     //====================== end items ========================//
 
-    @Override
-    public final int getItemViewType(int position) {
-        if (mHeaderFooterHelper != null) {
-            //in header or footer
-            if (mHeaderFooterHelper.isInHeader(position) ||
-                    mHeaderFooterHelper.isInFooter(position, mAdapterManager.getItemSize()))
-                return position;
-
-            position -= mHeaderFooterHelper.getHeaderViewSize();
-        }
-        return getItemViewTypeImpl(mHeaderFooterHelper, position);
-    }
-
     //extract for swipe adapter
     protected int getItemViewTypeImpl(HeaderFooterHelper hfHelper, int position) {
         int layoutId = getItemLayoutId(position, getItem(position));
@@ -285,47 +215,8 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
     }
 
     @Override
-    public final RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return onCreateViewHolderImpl(mHeaderFooterHelper, parent, viewType);
-    }
-
-    @NonNull
-    protected RecyclerView.ViewHolder onCreateViewHolderImpl(HeaderFooterHelper hfHelper,
-                                                             ViewGroup parent, int viewType) {
-        if (hfHelper == null || hfHelper.isLayoutIdInRecord(viewType)) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(
-                    viewType, parent, false), viewType);
-        } else {
-            return new ViewHolder(hfHelper.findView(viewType, mAdapterManager.getItemSize()));
-        }
-    }
-
-    @Override
-    public final void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public final void onBindViewHolderImpl(RecyclerView.ViewHolder holder, int position) {
         // Logger.w("QuickRecycleViewAdapter", "onBindViewHolder", "position_1 = " + position);
-        position = holder.getAdapterPosition();
-        if (position == RecyclerView.NO_POSITION) {
-            return;
-        }
-        // Logger.w("QuickRecycleViewAdapter", "onBindViewHolder", "position_2 = " + position);
-        if (mHeaderFooterHelper != null) {
-            if (mHeaderFooterHelper.isInHeader(position)
-                    || mHeaderFooterHelper.isInFooter(position, mAdapterManager.getItemSize())) {
-                /** let head/footer fullspan in StaggeredGridLayoutManager
-                 * added in 1.5
-                 */
-                ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-                if (layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
-                    ((StaggeredGridLayoutManager.LayoutParams) layoutParams).setFullSpan(true);
-                }
-                return;
-            }
-            position -= mHeaderFooterHelper.getHeaderViewSize();
-        }
-        if (!(holder instanceof IRecyclerViewHolder)) {
-            throw new RuntimeException("all quick adapter's viewHolder must implement" +
-                    " the interface IRecyclerViewHolder");
-        }
         //notify bind ViewHolder
         getSelectHelper().onBindViewHolder(holder);
 
@@ -354,22 +245,6 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
         final ViewHolder vh = (ViewHolder) holder;
         onBindData(vh.getContext(), position, item, vh.getLayoutId(),
                 (ViewHelper)vh.getViewHelper());
-    }
-
-    @Override
-    public final int getItemCount() {
-        return mHeaderFooterHelper == null ? mAdapterManager.getItemSize() :
-                mAdapterManager.getItemSize() + mHeaderFooterHelper.getHeaderViewSize() +
-                        mHeaderFooterHelper.getFooterViewSize();
-    }
-
-    // may use
-    @Override
-    public void onViewDetachedFromWindow(RecyclerView.ViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-        if (holder instanceof IRecyclerViewHolder) {
-            ((IRecyclerViewHolder) holder).getViewHelper().getRootView().clearAnimation();
-        }
     }
 
     /**
@@ -410,54 +285,5 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable>
      */
     protected void onBindData(Context context, int position, T item, int itemLayoutId, ViewHelper2 helper){
 
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder implements IRecyclerViewHolder {
-
-        public final ViewHelper2 mViewHelper;
-        /**
-         * if is in header or footer ,mLayoutId = 0
-         */
-        public final int mLayoutId;
-
-        public ViewHolder(View itemView, int layoutId) {
-            super(itemView);
-            this.mLayoutId = layoutId;
-            this.mViewHelper = new ViewHelper2(itemView);
-        }
-
-        public ViewHolder(View itemView) {
-            this(itemView, 0);
-        }
-
-        public Context getContext() {
-            return mViewHelper.getContext();
-        }
-
-        @Override
-        public int getLayoutId() {
-            return mLayoutId;
-        }
-
-        @Override
-        public ViewHelper2 getViewHelper() {
-            return mViewHelper;
-        }
-    }
-
-    public interface IRecyclerViewHolder {
-        /**
-         * get the item layout id.
-         *
-         * @return the item layout id
-         */
-        int getLayoutId();
-
-        /**
-         * get the ViewHelper
-         *
-         * @return the view helper
-         */
-        ViewHelper getViewHelper();
     }
 }

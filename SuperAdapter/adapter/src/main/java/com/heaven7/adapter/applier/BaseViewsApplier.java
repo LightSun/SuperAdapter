@@ -34,10 +34,27 @@ public abstract class BaseViewsApplier implements RecycleViewComponentsAdapter.A
         }
     }
 
+    /**
+     * indicate the the view will be applied or not. return true if filtered.
+     * @param view the view
+     * @param context the context
+     * @param contextData the context data
+     * @param position the position
+     * @param item the item
+     * @return true if is filtered
+     */
     protected boolean filter(View view, Context context, Object contextData, int position, ISelectable item){
         return false;
     }
-
+    /**
+     * apply data to the view
+     * @param view the view
+     * @param context the context
+     * @param contextData the context data
+     * @param position the position
+     * @param item the item
+     * @return true if is filtered
+     */
     protected abstract void apply(View view, Context context, Object contextData, int position, ISelectable item);
 
 }

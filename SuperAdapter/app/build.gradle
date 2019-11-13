@@ -48,5 +48,8 @@ dependencies {
     implementation('com.github.LightSun:util-v1:1.1.4'){
         exclude group: 'com.android.support'
     }
+    def butterknife = '8.4.0'
+    implementation "com.jakewharton:butterknife:${butterknife}"
+    annotationProcessor "com.jakewharton:butterknife-compiler:${butterknife}"
     implementation project(':adapter')
 }
