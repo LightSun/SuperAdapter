@@ -208,7 +208,11 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
                 ExpendableItem ei = (ExpendableItem) t;
                 if (ei.isExpended()) {
                     delta = ei.getChildItemCount();
+                }else {
+                    delta = 0;
                 }
+            }else {
+                delta = 0;
             }
             if (pos >= total && pos <= total + delta) {
                 outPoss[0] = i;
