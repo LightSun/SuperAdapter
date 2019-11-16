@@ -26,10 +26,6 @@ public class SimpleExpendItem<T> implements ExpendableAdapter.ExpendableItem {
     public List<T> getChildItems(){
         return items;
     }
-    @Override
-    public void addChildItems(int index, List list) {
-        items.addAll(index, (Collection<? extends T>) list);
-    }
 
     @Override
     public boolean isExpended() {
@@ -38,13 +34,5 @@ public class SimpleExpendItem<T> implements ExpendableAdapter.ExpendableItem {
     @Override
     public void setExpended(boolean expend) {
         expended = expend;
-    }
-    @Override
-    public int getChildItemCount() {
-        return items.size();
-    }
-    @Override
-    public T getChildItem(int subPos) {
-        return items.get(subPos);
     }
 }

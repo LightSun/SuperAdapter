@@ -59,19 +59,6 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
     public boolean addChildItems(int parentPos, int childStartIndex, List<?> list,  boolean notifyParent){
         return mManager.addChildItems(parentPos, childStartIndex, list,  notifyParent);
     }
-    /**
-     *  add child items.
-     * @param parentPos the parent pos
-     * @param childStartIndex the child start index
-     * @param list the list
-     * @param notifyParent true to notify parent
-     * @param notifyAfter true to notify after positions
-     * @return true if add success
-     * @since 2.0.5-beta2
-     */
-    public boolean addChildItems(int parentPos, int childStartIndex, List<?> list, boolean notifyParent, boolean notifyAfter){
-        return mManager.addChildItems(parentPos, childStartIndex, list, notifyParent, notifyAfter);
-    }
     public void addItem(T item){
         mManager.addItem(item);
     }
@@ -252,10 +239,6 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
 
         void setExpended(boolean expend);
 
-        int getChildItemCount();
-
-        Object getChildItem(int childIndex);
-
-        void addChildItems(int childStartIndex, List<?> list);
+        List<?> getChildItems();
     }
 }

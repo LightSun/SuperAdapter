@@ -61,7 +61,7 @@ public interface IExpendableManager<T> {
 
     /**
      *  add child items.
-     * @param parentPos the parent pos
+     * @param parentPos the parent pos  exclude header
      * @param list the list
      * @param notifyParent true to notify parent
      * @return true if add success
@@ -79,21 +79,56 @@ public interface IExpendableManager<T> {
     boolean addChildItems(int parentPos, int childStartIndex, List<?> list, boolean notifyParent);
 
     /**
-     *  add child items.
-     * @param parentPos the parent pos
+     *  remove child items.
+     * @param parentPos the parent pos exclude header
      * @param childStartIndex the child start index
-     * @param list the list
+     * @param count the count to remove
      * @param notifyParent true to notify parent
-     * @param notifyAfter true to notify after positions of this parent position
      * @return true if add success
      */
-    boolean addChildItems(int parentPos, int childStartIndex, List<?> list, boolean notifyParent, boolean notifyAfter);
+    boolean removeChildItems(int parentPos, int childStartIndex, int count, boolean notifyParent);
+
+    /**
+     * update child items
+     * @param parentPos the parent position exclude header
+     * @param childStartIndex the child start index
+     * @param count the count to update
+     * @param notifyParent true to notify parent
+     * @param updater update performer
+     * @return true if success.
+     */
+    boolean updateChildItems(int parentPos, int childStartIndex, int count, boolean notifyParent, ChildItemsUpdater updater);
+
+    /**
+     * update child items
+     * @param parentPos the parent position exclude header
+     * @param notifyParent true to notify parent
+     * @param updater update performer
+     * @return true if success.
+     */
+    boolean updateChildItems(int parentPos, boolean notifyParent, ChildItemsUpdater updater);
+    /**
+     * update child item
+     * @param parentPos the parent position exclude header
+     * @param childIndex the child index
+     * @param notifyParent true to notify parent
+     * @param updater update performer
+     * @return true if success.
+     */
+    boolean updateChildItem(int parentPos, int childIndex,  boolean notifyParent, ChildItemUpdater updater);
 
     /**
      * set items
      * @param list the items data
      */
     void setItems(List<T> list);
+
+    /**
+     * set the item
+     * @param parentIndex the paren index
+     * @param item the item to set.
+     */
+    void setItem(int parentIndex, T item);
 
     /**
      * add item sas parent item
@@ -171,4 +206,32 @@ public interface IExpendableManager<T> {
      * @return null if can't find
      */
     int[] getParentPositions(int pos, int[] outPoss);
+
+    /**
+     * the child items updater
+     */
+    interface ChildItemsUpdater{
+        /**
+         * called on update child items
+         * @param parentPos the parent position
+         * @param childStartIndex the child start index
+         * @param children the child to update
+         * @return true if update success.
+         */
+        boolean update(int parentPos, int childStartIndex, List<?> children);
+    }
+
+    /**
+     * the child items updater
+     */
+    interface ChildItemUpdater{
+        /**
+         * called on update child items
+         * @param parentPos the parent position
+         * @param childIndex the child index
+         * @param child the child to update
+         * @return true if update success.
+         */
+        boolean update(int parentPos, int childIndex, Object child);
+    }
 }

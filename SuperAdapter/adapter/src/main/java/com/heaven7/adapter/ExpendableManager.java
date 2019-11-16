@@ -2,6 +2,7 @@ package com.heaven7.adapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -88,7 +89,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
 
                 final int preCount = getPreviousCount(parentPos);
                 mAMC.notifyItemChanged(preCount);
-                mAMC.notifyItemRangeRemoved(preCount + 1, ei.getChildItemCount());
+                mAMC.notifyItemRangeRemoved(preCount + 1, new ExpendItemWrapper(ei).getChildItemCount());
                 return true;
             }
         }
@@ -107,7 +108,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     public boolean expandByParent(int parentPos) {
         T t = getItem(parentPos);
         if (t instanceof ExpendableAdapter.ExpendableItem) {
-            ExpendableAdapter.ExpendableItem ei = (ExpendableAdapter.ExpendableItem) t;
+            ExpendItemWrapper ei = new ExpendItemWrapper((ExpendableAdapter.ExpendableItem) t);
             if (ei.getChildItemCount()> 0 && !ei.isExpended()) {
                 ei.setExpended(true);
                 final int preCount = getPreviousCount(parentPos);
@@ -120,17 +121,13 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     }
     @Override
     public boolean addChildItems(int parentPos, List<?> list, boolean notifyParent){
-        return addChildItems(parentPos, -1, list,  notifyParent, false);
+        return addChildItems(parentPos, -1, list,  notifyParent);
     }
     @Override
     public boolean addChildItems(int parentPos, int childStartIndex, List<?> list, boolean notifyParent){
-        return addChildItems(parentPos, childStartIndex, list,  notifyParent, false);
-    }
-    @Override
-    public boolean addChildItems(int parentPos, int childStartIndex, List<?> list, boolean notifyParent, boolean notifyAfter){
         T item = getItem(parentPos);
         if(item instanceof ExpendableAdapter.ExpendableItem){
-            ExpendableAdapter.ExpendableItem ei = (ExpendableAdapter.ExpendableItem) item;
+            ExpendItemWrapper ei = new ExpendItemWrapper((ExpendableAdapter.ExpendableItem) item);
             //-1 mean add to last
             if(childStartIndex == -1){
                 childStartIndex = ei.getChildItemCount();
@@ -138,14 +135,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
             ei.addChildItems(childStartIndex, list);
             final int preCount = getPreviousCount(parentPos);
             if(ei.isExpended()){
-                int itemCount = ei.getChildItemCount();
                 mAMC.notifyItemRangeInserted(preCount + 1 + childStartIndex, list.size());
-                if(notifyAfter){
-                    int mayChangCount = itemCount - 1 - childStartIndex;
-                    if(mayChangCount > 0){
-                        mAMC.notifyItemRangeChanged(preCount + 1 + childStartIndex + list.size(), mayChangCount);
-                    }
-                }
             }
             if(notifyParent){
                 mAMC.notifyItemChanged(preCount);
@@ -155,6 +145,64 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
         return false;
     }
 
+    @Override
+    public boolean removeChildItems(int parentPos, int childStartIndex, int count, boolean notifyParent) {
+        T item = getItem(parentPos);
+        if(item instanceof ExpendableAdapter.ExpendableItem){
+            ExpendItemWrapper ei = new ExpendItemWrapper((ExpendableAdapter.ExpendableItem) item);
+            ei.removeChildItems(childStartIndex, count);
+            final int preCount = getPreviousCount(parentPos);
+            if(ei.isExpended()){
+                mAMC.notifyItemRangeRemoved(preCount + 1 + childStartIndex, count);
+            }
+            if(notifyParent){
+                mAMC.notifyItemChanged(preCount);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateChildItems(int parentPos, int childStartIndex, int count, boolean notifyParent, ChildItemsUpdater updater) {
+        T item = getItem(parentPos);
+        if(item instanceof ExpendableAdapter.ExpendableItem){
+            ExpendItemWrapper ei = wrapItem(item);
+            List<?> items = ei.getChildItems(childStartIndex, count);
+            if(updater.update(parentPos, childStartIndex, items)){
+                final int preCount = getPreviousCount(parentPos);
+                mAMC.notifyItemRangeChanged(preCount + 1 + childStartIndex, items.size());
+                if(notifyParent){
+                    mAMC.notifyItemChanged(preCount);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateChildItems(int parentPos, boolean notifyParent, ChildItemsUpdater updater) {
+        return updateChildItems(parentPos, 0,  -1, notifyParent, updater);
+    }
+
+    @Override
+    public boolean updateChildItem(int parentPos, int childIndex, boolean notifyParent, ChildItemUpdater updater) {
+        T item = getItem(parentPos);
+        if(item instanceof ExpendableAdapter.ExpendableItem){
+            ExpendItemWrapper ei = wrapItem(item);
+            Object child = ei.getChildItem(childIndex);
+            if(updater.update(parentPos, childIndex, child)){
+                final int preCount = getPreviousCount(parentPos);
+                mAMC.notifyItemChanged(preCount + 1 + childIndex);
+                if(notifyParent){
+                    mAMC.notifyItemChanged(preCount);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
     //---------------------------------------------------------------
 
     @Override
@@ -163,6 +211,18 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
         mDatas.addAll(list);
         mAMC.notifyDataSetChanged();
     }
+
+    @Override
+    public void setItem(int parentIndex, T item) {
+        int preCount = getPreviousCount(parentIndex);
+        T oldItem = getItem(parentIndex);
+        int oldCount = computeItemCount(oldItem);
+        int newCount = computeItemCount(item);
+        mDatas.set(parentIndex, item);
+        mAMC.notifyItemRangeRemoved(preCount + 1, oldCount);
+        mAMC.notifyItemRangeInserted(preCount + 1, newCount);
+    }
+
     @Override
     public void addItems(List<T> list){
         int oldSize = computeItemCount(mDatas);
@@ -195,7 +255,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     public boolean hasChildItem(int parentPos) {
         T t = getItem(parentPos);
         if (t instanceof ExpendableAdapter.ExpendableItem) {
-            return ((ExpendableAdapter.ExpendableItem) t).getChildItemCount() > 0;
+            return new ExpendItemWrapper((ExpendableAdapter.ExpendableItem) t).getChildItemCount() > 0;
         }
         return false;
     }
@@ -217,7 +277,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     public Object getChildItem(int parentPos, int childPos) {
         T t = getItem(parentPos);
         if (t instanceof ExpendableAdapter.ExpendableItem) {
-            return ((ExpendableAdapter.ExpendableItem) t).getChildItem(childPos);
+            return wrapItem(t).getChildItem(childPos);
         }
         return null;
     }
@@ -228,8 +288,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
         if(positions == null || positions[1] == -1){
             return null;
         }
-        ExpendableAdapter.ExpendableItem item = (ExpendableAdapter.ExpendableItem) getItem(positions[0]);
-        return item.getChildItem(positions[1]);
+        return wrapItem(getItem(positions[0])).getChildItem(positions[1]);
     }
     //-----------------------------------------------------
     @Override
@@ -244,7 +303,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
             if (t instanceof ExpendableAdapter.ExpendableItem) {
                 ExpendableAdapter.ExpendableItem ei = (ExpendableAdapter.ExpendableItem) t;
                 if (ei.isExpended()) {
-                    delta = ei.getChildItemCount();
+                    delta = ei.getChildItems().size();
                 }else {
                     delta = 0;
                 }
@@ -275,11 +334,22 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
             if (t instanceof ExpendableAdapter.ExpendableItem) {
                 ExpendableAdapter.ExpendableItem ei = (ExpendableAdapter.ExpendableItem) t;
                 if (ei.isExpended()) {
-                    total += ei.getChildItemCount();
+                    total += ei.getChildItems().size();
                 }
             }
         }
         return total;
+    }
+
+    public static <T> int computeItemCount(T t){
+        int count = 1;
+        if (t instanceof ExpendableAdapter.ExpendableItem) {
+            ExpendableAdapter.ExpendableItem ei = (ExpendableAdapter.ExpendableItem) t;
+            if (ei.isExpended()) {
+                count+= ei.getChildItems().size();
+            }
+        }
+        return count;
     }
 
     /**
@@ -292,6 +362,9 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
             return computeItemCount(getItems().subList(0, parentPos));
         }
         return 0;
+    }
+    private ExpendItemWrapper wrapItem(T t){
+        return new ExpendItemWrapper((ExpendableAdapter.ExpendableItem)t);
     }
 
     //---------------------------------------------------------------
@@ -342,6 +415,53 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
         @Override
         public void notifyDataSetChanged() {
             mUpdater.notifyDataSetChanged();
+        }
+    }
+    private static class ExpendItemWrapper implements ExpendableAdapter.ExpendableItem {
+        final ExpendableAdapter.ExpendableItem item;
+
+        public ExpendItemWrapper(ExpendableAdapter.ExpendableItem item) {
+            this.item = item;
+        }
+        public int getChildItemCount(){
+            return item.getChildItems().size();
+        }
+        public Object getChildItem(int childIndex){
+            return item.getChildItems().get(childIndex);
+        }
+        public void addChildItems(int childStartIndex, List<?> list){
+            item.getChildItems().addAll(childStartIndex, (Collection) list);
+        }
+        public void removeChildItems(int childStartIndex, int count){
+            List<?> items = item.getChildItems();
+            int maxIndex = childStartIndex + count; //exclude
+            for (int size = items.size(), i = size ;  i >= 0  ; i --){
+                if(i >= childStartIndex && i < maxIndex){
+                    items.remove(i);
+                }
+                if(i < childStartIndex){
+                    break;
+                }
+            }
+        }
+        //count = -1 . means all after.
+        public List<?> getChildItems(int childStartIndex, int count){
+            if(count < 0){
+                count = item.getChildItems().size() - childStartIndex;
+            }
+             return item.getChildItems().subList(childStartIndex, childStartIndex + count);
+        }
+        @Override
+        public boolean isExpended() {
+            return item.isExpended();
+        }
+        @Override
+        public void setExpended(boolean expend) {
+            item.setExpended(expend);
+        }
+        @Override
+        public List<?> getChildItems() {
+            return item.getChildItems();
         }
     }
 }
