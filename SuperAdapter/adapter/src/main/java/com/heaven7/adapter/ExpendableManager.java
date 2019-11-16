@@ -219,8 +219,12 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
         int oldCount = computeItemCount(oldItem);
         int newCount = computeItemCount(item);
         mDatas.set(parentIndex, item);
-        mAMC.notifyItemRangeRemoved(preCount + 1, oldCount);
-        mAMC.notifyItemRangeInserted(preCount + 1, newCount);
+        if(oldCount == newCount){
+            mAMC.notifyItemRangeChanged(preCount + 1, oldCount);
+        }else {
+            mAMC.notifyItemRangeRemoved(preCount + 1, oldCount);
+            mAMC.notifyItemRangeInserted(preCount + 1, newCount);
+        }
     }
 
     @Override
