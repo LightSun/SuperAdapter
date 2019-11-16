@@ -1,7 +1,6 @@
 package com.heaven7.adapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**

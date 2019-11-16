@@ -95,7 +95,7 @@ public class TestExpendAdapterActivity extends AppCompatActivity {
         @Override
         public void onBindChildData(ExpendableAdapter<ParentItem> adapter, Context context, int realPosition, int parentPos, int childPos,
                                     ParentItem item, int itemLayoutId, ViewHelper2 helper) {
-            final Item childItem = item.getChildItem(childPos);
+            final Item childItem = item.getChildItems().get(childPos);
             helper.setText(android.R.id.text1, childItem.text)
                     .setRootOnClickListener(new View.OnClickListener() {
                         @Override

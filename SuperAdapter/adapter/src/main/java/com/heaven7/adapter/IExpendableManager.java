@@ -222,7 +222,7 @@ public interface IExpendableManager<T> {
     }
 
     /**
-     * the child items updater
+     * the child item updater
      */
     interface ChildItemUpdater{
         /**
