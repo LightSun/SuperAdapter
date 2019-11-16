@@ -89,7 +89,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
 
                 final int preCount = getPreviousCount(parentPos);
                 mAMC.notifyItemChanged(preCount);
-                mAMC.notifyItemRangeRemoved(preCount + 1, new ExpendItemWrapper(ei).getChildItemCount());
+                mAMC.notifyItemRangeRemoved(preCount + 1, ei.getChildItems().size());
                 return true;
             }
         }
@@ -108,7 +108,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     public boolean expandByParent(int parentPos) {
         T t = getItem(parentPos);
         if (t instanceof ExpendableAdapter.ExpendableItem) {
-            ExpendItemWrapper ei = new ExpendItemWrapper((ExpendableAdapter.ExpendableItem) t);
+            ExpendItemWrapper ei = wrapItem(t);
             if (ei.getChildItemCount()> 0 && !ei.isExpended()) {
                 ei.setExpended(true);
                 final int preCount = getPreviousCount(parentPos);
@@ -127,7 +127,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     public boolean addChildItems(int parentPos, int childStartIndex, List<?> list, boolean notifyParent){
         T item = getItem(parentPos);
         if(item instanceof ExpendableAdapter.ExpendableItem){
-            ExpendItemWrapper ei = new ExpendItemWrapper((ExpendableAdapter.ExpendableItem) item);
+            ExpendItemWrapper ei = wrapItem(item);
             //-1 mean add to last
             if(childStartIndex == -1){
                 childStartIndex = ei.getChildItemCount();
@@ -149,7 +149,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     public boolean removeChildItems(int parentPos, int childStartIndex, int count, boolean notifyParent) {
         T item = getItem(parentPos);
         if(item instanceof ExpendableAdapter.ExpendableItem){
-            ExpendItemWrapper ei = new ExpendItemWrapper((ExpendableAdapter.ExpendableItem) item);
+            ExpendItemWrapper ei = wrapItem(item);
             ei.removeChildItems(childStartIndex, count);
             final int preCount = getPreviousCount(parentPos);
             if(ei.isExpended()){
@@ -255,7 +255,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     public boolean hasChildItem(int parentPos) {
         T t = getItem(parentPos);
         if (t instanceof ExpendableAdapter.ExpendableItem) {
-            return new ExpendItemWrapper((ExpendableAdapter.ExpendableItem) t).getChildItemCount() > 0;
+            return ((ExpendableAdapter.ExpendableItem) t).getChildItems().size() > 0;
         }
         return false;
     }
