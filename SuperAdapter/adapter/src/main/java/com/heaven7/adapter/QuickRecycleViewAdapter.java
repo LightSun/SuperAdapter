@@ -18,12 +18,7 @@ package com.heaven7.adapter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.heaven7.adapter.util.ViewHelper2;
 import com.heaven7.core.util.ViewHelper;
