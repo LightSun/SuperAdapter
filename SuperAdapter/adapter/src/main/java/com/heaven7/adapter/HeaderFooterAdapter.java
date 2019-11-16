@@ -17,7 +17,7 @@ import com.heaven7.core.util.ViewHelper;
  * @since 2.0.5
  */
 public abstract class HeaderFooterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements AdapterManager.IHeaderFooterManager{
+        implements AdapterManager.IHeaderFooterManager, IPartUpdater{
 
     private HeaderFooterHelper mHeaderFooterHelper;
     private Callback mCallback;

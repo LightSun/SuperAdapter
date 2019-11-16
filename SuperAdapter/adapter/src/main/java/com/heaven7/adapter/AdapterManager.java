@@ -636,22 +636,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
         void onPostCallback(int position, T item, int itemLayoutId, ViewHelper helper);
     }
 
-    interface IAdapterManagerCallback2 {
-        void notifyItemInserted(int position);
-
-        void notifyItemChanged(int position);
-
-        void notifyItemRemoved(int position);
-
-        void notifyItemMoved(int fromPosition, int toPosition);
-
-        void notifyItemRangeChanged(int positionStart, int itemCount);
-
-        void notifyItemRangeInserted(int positionStart, int itemCount);
-
-        void notifyItemRangeRemoved(int positionStart, int itemCount);
-
-        // =========== end recycleview ==============//
+    interface IAdapterManagerCallback2 extends IPartUpdater{
 
         void notifyDataSetChanged();
 

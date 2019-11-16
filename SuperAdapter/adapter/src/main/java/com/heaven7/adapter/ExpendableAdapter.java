@@ -5,8 +5,6 @@ import android.support.v7.widget.RecyclerView;
 
 import com.heaven7.adapter.util.ViewHelper2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,18 +15,18 @@ import java.util.List;
  */
 public class ExpendableAdapter<T> extends HeaderFooterAdapter {
 
-    private final List<T> mDatas;
-    private final int[] mPoss = new int[2];
     private final ItemTypeDelegate<T> mItemTypeDelegate;
     private ItemBindDelegate<T> mItemBindDelegate;
 
+    private final ExpendableManager<T> mManager;
+
     public ExpendableAdapter(ItemTypeDelegate<T> typeDelegate, List<T> items) {
         this.mItemTypeDelegate = typeDelegate;
-        this.mDatas = items != null ? new ArrayList<>(items) : new ArrayList<T>();
+        mManager = new ExpendableManager<T>(this, this, items);
         setCallback(new HeaderFooterAdapter.Callback() {
             @Override
             public int getActuallyItemSize() {
-                return computeItemCount(mDatas);
+                return ExpendableManager.computeItemCount(mManager.getItems());
             }
         });
     }
@@ -36,17 +34,16 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
         mItemBindDelegate = bindDelegate;
     }
 
+    public IExpendableManager<T> getManager(){
+        return mManager;
+    }
+
     public void setItems(List<T> list){
-        mDatas.clear();
-        mDatas.addAll(list);
-        notifyDataSetChanged();
+        mManager.setItems(list);
     }
 
     public void addItems(List<T> list){
-        int oldSize = computeItemCount(mDatas);
-        int deltaSize = computeItemCount(list);
-        mDatas.addAll(list);
-        notifyItemRangeInserted(oldSize + getHeaderSize(), deltaSize);
+        mManager.addItems(list);
     }
     /**
      *  add child items.
@@ -57,10 +54,10 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
      * @since 2.0.5-beta2
      */
     public boolean addChildItems(int parentPos, List<?> list, boolean notifyParent){
-        return addChildItems(parentPos, -1, list,  notifyParent, false);
+        return mManager.addChildItems(parentPos, list,  notifyParent);
     }
     public boolean addChildItems(int parentPos, int childStartIndex, List<?> list,  boolean notifyParent){
-        return addChildItems(parentPos, childStartIndex, list,  notifyParent, false);
+        return mManager.addChildItems(parentPos, childStartIndex, list,  notifyParent);
     }
     /**
      *  add child items.
@@ -73,120 +70,46 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
      * @since 2.0.5-beta2
      */
     public boolean addChildItems(int parentPos, int childStartIndex, List<?> list, boolean notifyParent, boolean notifyAfter){
-        T item = getItem(parentPos);
-        if(item instanceof ExpendableItem){
-            ExpendableItem ei = (ExpendableItem) item;
-            //-1 mean add to last
-            if(childStartIndex == -1){
-                childStartIndex = ei.getChildItemCount();
-            }
-            ei.addChildItems(childStartIndex, list);
-            final int preCount = getPreCount(parentPos);
-            if(ei.isExpended()){
-                int itemCount = ei.getChildItemCount();
-                notifyItemRangeInserted(preCount + 1 + childStartIndex, list.size());
-                if(notifyAfter){
-                    int mayChangCount = itemCount - 1 - childStartIndex;
-                    if(mayChangCount > 0){
-                        notifyItemRangeChanged(preCount + 1 + childStartIndex + list.size(), mayChangCount);
-                    }
-                }
-            }
-            if(notifyParent){
-                notifyItemChanged(preCount);
-            }
-            return true;
-        }
-        return false;
+        return mManager.addChildItems(parentPos, childStartIndex, list, notifyParent, notifyAfter);
     }
     public void addItem(T item){
-        addItems(Arrays.asList(item));
+        mManager.addItem(item);
     }
     public List<T> getItems(){
-        return mDatas;
+        return mManager.getItems();
     }
     public T getParentItem(int realPosition){
-        int[] positions = getParentPositions(realPosition, null);
-        if(positions != null){
-             return getItem(positions[0]);
-        }
-        return null;
+        return mManager.getParentItem(realPosition);
     }
     public Object getChildItem(int realPosition){
-        int[] positions = getParentPositions(realPosition, null);
-        if(positions == null || positions[1] == -1){
-            return null;
-        }
-        ExpendableItem item = (ExpendableItem) getItem(positions[0]);
-        return item.getChildItem(positions[1]);
+        return mManager.getChildItem(realPosition);
     }
-
     public T getItem(int parentPos) {
-        return mDatas.get(parentPos);
+        return mManager.getItem(parentPos);
     }
-
-    public boolean hasSubItem(int parentPos) {
-        T t = getItem(parentPos);
-        if (t instanceof ExpendableItem) {
-            return ((ExpendableItem) t).getChildItemCount() > 0;
-        }
-        return false;
+    public boolean hasChildItem(int parentPos) {
+        return mManager.hasChildItem(parentPos);
     }
 
     public boolean isExpendItem(int parentPos) {
-        return getItem(parentPos) instanceof ExpendableItem;
+        return mManager.isExpendItem(parentPos);
     }
 
-    public Object getSubItem(int parentPos, int subPos) {
-        T t = getItem(parentPos);
-        if (t instanceof ExpendableItem) {
-            return ((ExpendableItem) t).getChildItem(subPos);
-        }
-        return null;
+    public Object getChildItem(int parentPos, int childPos) {
+        return mManager.getChildItem(parentPos, childPos);
     }
 
     public boolean collapse(int position) {
-        int[] poss = getParentPositions(position, null);
-        if(poss == null){
-            return false;
-        }
-        return collapseByParent(poss[0]);
+        return mManager.collapse(position);
     }
     public boolean collapseByParent(int parentPos) {
-        T t = getItem(parentPos);
-        if (t instanceof ExpendableItem) {
-            ExpendableItem ei = (ExpendableItem) t;
-            if (ei.isExpended()) {
-                ei.setExpended(false);
-
-                final int preCount = getPreCount(parentPos);
-                notifyItemChanged(preCount);
-                notifyItemRangeRemoved(preCount + 1, ei.getChildItemCount());
-                return true;
-            }
-        }
-        return false;
+        return mManager.collapseByParent(parentPos);
     }
     public boolean expand(int parentPos) {
-        int[] poss = getParentPositions(parentPos, null);
-        if(poss == null){
-            return false;
-        }
-        return expandByParent(poss[0]);
+        return mManager.expand(parentPos);
     }
     public boolean expandByParent(int parentPos) {
-        T t = getItem(parentPos);
-        if (t instanceof ExpendableItem) {
-            ExpendableItem ei = (ExpendableItem) t;
-            if (!ei.isExpended()) {
-                ei.setExpended(true);
-                final int preCount = getPreCount(parentPos);
-                notifyItemChanged(preCount);
-                notifyItemRangeInserted(preCount + 1, ei.getChildItemCount());
-                return true;
-            }
-        }
-        return false;
+        return mManager.expandByParent(parentPos);
     }
 
     /**
@@ -197,33 +120,10 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
      * @return null if can't find
      */
     public int[] getParentPositions(int pos, int[] outPoss) {
-        if(outPoss == null){
-            outPoss = mPoss;
-        }
-        int total = 0;
-        int delta = 0;
-        for (int i = 0, size = mDatas.size(); i < size; i++) {
-            T t = mDatas.get(i);
-            if (t instanceof ExpendableItem) {
-                ExpendableItem ei = (ExpendableItem) t;
-                if (ei.isExpended()) {
-                    delta = ei.getChildItemCount();
-                }else {
-                    delta = 0;
-                }
-            }else {
-                delta = 0;
-            }
-            if (pos >= total && pos <= total + delta) {
-                outPoss[0] = i;
-                outPoss[1] = pos - total - 1;
-                return outPoss;
-            }
-            total += 1 + delta;
-        }
-        return null;
+        return mManager.getParentPositions(pos, outPoss);
     }
 
+    //-----------------------------------------------------------------------------------------
     @Override
     protected void onBindViewHolderImpl(RecyclerView.ViewHolder holder, int position) {
         IRecyclerViewHolder vh = (IRecyclerViewHolder) holder;
@@ -248,17 +148,6 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
             hfHelper.recordLayoutId(layoutId);
         return layoutId;
     }
-
-    private int getPreCount(int parentPos) {
-        final int preCount;
-        if (parentPos > 0) {
-            preCount = computeItemCount(getItems().subList(0, parentPos)) + getHeaderSize();
-        } else {
-            preCount = 0;
-        }
-        return preCount;
-    }
-
     private int getItemLayoutId(HeaderFooterHelper hfHelper, int position) {
         int[] poss = getParentPositions(position, null);
         int parentPosition = poss[0];
@@ -271,22 +160,6 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
         }
         return mItemTypeDelegate.getChildItemLayoutId(t, position, parentPosition, poss[1]);
     }
-
-    public int computeItemCount(List<T> list){
-        int total = 0;
-        for (int i = 0, size = list.size(); i < size; i++) {
-            T t = list.get(i);
-            total += 1;
-            if (t instanceof ExpendableItem) {
-                ExpendableItem ei = (ExpendableItem) t;
-                if (ei.isExpended()) {
-                    total += ei.getChildItemCount();
-                }
-            }
-        }
-        return total;
-    }
-
     /**
      * called on bind parent data
      * @param context the context
@@ -296,7 +169,9 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
      * @param helper the helper
      */
     protected void onBindParentData(Context context, int realPosition, int parentPos, T item, int layoutId, ViewHelper2 helper){
-        mItemBindDelegate.onBindParentData(this, context, realPosition, parentPos, item, layoutId, helper);
+        if(mItemBindDelegate != null){
+            mItemBindDelegate.onBindParentData(this, context, realPosition, parentPos, item, layoutId, helper);
+        }
     }
     /**
      * called on bind child data
@@ -308,7 +183,9 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
      * @param helper the helper
      */
     protected void onBindChildData(Context context, int realPosition, int parentPos, int childPos, T item, int layoutId,ViewHelper2 helper){
-        mItemBindDelegate.onBindChildData(this, context, realPosition, parentPos, childPos, item, layoutId, helper);
+        if(mItemBindDelegate != null){
+            mItemBindDelegate.onBindChildData(this, context, realPosition, parentPos, childPos, item, layoutId, helper);
+        }
     }
 
     public interface ItemTypeDelegate<T> {
@@ -370,13 +247,14 @@ public class ExpendableAdapter<T> extends HeaderFooterAdapter {
      * the expend item
      */
     public interface ExpendableItem {
+
         boolean isExpended();
 
         void setExpended(boolean expend);
 
         int getChildItemCount();
 
-        Object getChildItem(int subPos);
+        Object getChildItem(int childIndex);
 
         void addChildItems(int childStartIndex, List<?> list);
     }
