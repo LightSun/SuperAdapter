@@ -290,7 +290,7 @@ public class SelectHelper<T extends ISelectable> {
         return mSelectDatas;
     }
 
-    public void initSelectPositions(List<T> list) {
+    public void initSelectPositions(List<? extends T> list) {
         if (list == null || list.size() == 0) {
             return;
         }

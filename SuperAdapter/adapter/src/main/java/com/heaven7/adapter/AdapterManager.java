@@ -209,7 +209,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
         addItems(Arrays.asList(items));
     }
 
-    public void addItems(int startIndex, Collection<T> items) {
+    public void addItems(int startIndex, Collection<? extends T> items) {
         final int preSize = mDatas.size();
         if (startIndex < 0 || startIndex > preSize) {
             throw new IllegalArgumentException();
@@ -222,7 +222,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
         }
     }
 
-    public void addItems(Collection<T> items) {
+    public void addItems(Collection<? extends T> items) {
         final int preSize = mDatas.size();
         mDatas.addAll(items);
         if (isRecyclable()) {
@@ -306,7 +306,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
     }
 
     @RemoveObservableMethod
-    public void removeItems(List<T> ts) {
+    public void removeItems(List<? extends T> ts) {
         if (ts == null || ts.size() == 0)
             return;
         List<T> mDatas = this.mDatas;
@@ -340,7 +340,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
     }
 
     @RemoveObservableMethod
-    public void replaceAllItems(List<T> items) {
+    public void replaceAllItems(List<? extends T> items) {
         mSelectHelper.clearSelectedState();
         final boolean hasObserver = observeAllItems();
         mDatas.clear();
@@ -508,7 +508,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
         }
     }
 
-    private void notifyItemRangeRemovedInternal(List<T> removedItems) {
+    private void notifyItemRangeRemovedInternal(List<? extends T> removedItems) {
         if (mRemovedObservable != null && mRemovedObservable.hasObservers()) {
             mRemovedObservable.notifyItemRangeRemoved(removedItems);
         }
@@ -544,7 +544,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
             removedItems.add(t);
         }
 
-        public void addItems(List<T> items) {
+        public void addItems(List<? extends T> items) {
             removedItems.addAll(items);
         }
 
@@ -561,7 +561,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
          *
          * @param items the items data
          */
-        public void notifyItemRangeRemoved(List<T> items) {
+        public void notifyItemRangeRemoved(List<? extends T> items) {
             addItems(items);
             notifyItemRangeRemoved();
         }
