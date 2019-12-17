@@ -140,6 +140,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable> extends Hea
      *
      * @param position the position of adapter
      **/
+    @Deprecated
     public void addUnselected(int position) {
         getSelectHelper().addUnselected(position);
     }
@@ -148,6 +149,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable> extends Hea
      * un select the all selected position.
      * mode single or multi all supoorted
      */
+    @Deprecated
     public void clearAllSelected() {
         getSelectHelper().clearAllSelected();
     }
@@ -158,6 +160,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable> extends Hea
      *
      * @param position the position of adapter
      **/
+    @Deprecated
     public void setSelected(int position) {
         getSelectHelper().setSelected(position);
     }
@@ -168,6 +171,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable> extends Hea
      *
      * @param position the position of adapter
      */
+    @Deprecated
     public void setUnselected(int position) {
         getSelectHelper().setUnselected(position);
     }
@@ -176,18 +180,19 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable> extends Hea
      * clear selected positions  . this just clear record. bu not notify item change
      * <p> support select mode = {@link ISelectable#SELECT_MODE_SINGLE} or {@link ISelectable#SELECT_MODE_MULTI}</p>
      */
+    @Deprecated
     public void clearSelectedPositions() {
         getSelectHelper().clearSelectedPositions();
     }
-
+    @Deprecated
     public T getSelectedData() {
         return getSelectHelper().getSelectedItem();
     }
-
+    @Deprecated
     public List<T> getSelectedItems() {
         return getSelectHelper().getSelectedItems();
     }
-
+    @Deprecated
     public int getSelectedPosition() {
         return getSelectHelper().getSelectedPosition();
     }

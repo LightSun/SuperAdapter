@@ -36,6 +36,31 @@ public class RecyclerViewUtils {
         }
         return lastVisibleItemPosition;
     }
+    /**
+     * return the first visible item position or -1 for unknown LayoutManager.
+     * @param rv the RecyclerView
+     * @return the first visible item position or -1 for unknown LayoutManager
+     * @since 2.0.7
+     */
+    public static int findFirstVisibleItemPosition(RecyclerView rv) {
+        RecyclerView.LayoutManager lm = rv.getLayoutManager();
+        int position = Integer.MAX_VALUE ;
+        if (lm instanceof GridLayoutManager) {
+            position = ((GridLayoutManager) lm).findFirstVisibleItemPosition();
+
+        } else if (lm instanceof LinearLayoutManager) {
+            position = ((LinearLayoutManager) lm).findFirstVisibleItemPosition();
+
+        } else if (lm instanceof StaggeredGridLayoutManager) {
+            int positions[] =  ((StaggeredGridLayoutManager) lm).findFirstVisibleItemPositions(null);
+            for(int pos : positions){
+                if(pos < position){
+                    position = pos;
+                }
+            }
+        }
+        return position != Integer.MAX_VALUE ?  position : RecyclerView.NO_POSITION;
+    }
 
 
     /**

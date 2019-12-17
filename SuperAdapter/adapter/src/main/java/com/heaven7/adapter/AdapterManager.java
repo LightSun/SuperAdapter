@@ -40,6 +40,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
 
     private final IAdapterManagerCallback2 mCallback2;
     private final SelectHelper<T> mSelectHelper;
+    private final Selector<T> mSelector;
     private final List<T> mDatas;
 
     private ArrayList<IPostRunnableCallback<T>> mPostCallbacks;
@@ -49,10 +50,50 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
      * @param selectMode see {@link ISelectable#SELECT_MODE_MULTI} or {@link ISelectable#SELECT_MODE_MULTI}
      */
     /*public*/ AdapterManager(List<T> data, int selectMode, IAdapterManagerCallback2 callback2) {
+       this(data, selectMode, callback2, false);
+    }
+    /*public*/ AdapterManager(List<T> data, int selectMode, IAdapterManagerCallback2 callback2, boolean newSelector) {
         this.mDatas = data == null ? new ArrayList<T>() : new ArrayList<T>(data);
-        mSelectHelper = new SelectHelper<T>(selectMode, this);
-        mSelectHelper.initSelectPositions(data);
         this.mCallback2 = callback2;
+
+        if(newSelector){
+            mSelectHelper = null;
+            this.mSelector = new Selector<>(new Selector.Callback<T>() {
+                @Override
+                public void onSelect(List<T> items, T item) {
+                    int index = mDatas.indexOf(item);
+                    if(index >= 0){
+                        notifyItemChanged(index);
+                    }else {
+                        System.err.println("error occurs: when onSelect item = " + item);
+                    }
+                }
+                @Override
+                public void onUnselect(List<T> items, T item) {
+                    int index = mDatas.indexOf(item);
+                    if(index >= 0){
+                        notifyItemChanged(index);
+                    }else {
+                        System.err.println("error occurs: when onUnselect item = " + item);
+                    }
+                }
+            });
+            this.mSelector.setSingleMode(selectMode == ISelectable.SELECT_MODE_SINGLE);
+            this.mSelector.initialize(data);
+        }else {
+            mSelectHelper = new SelectHelper<T>(selectMode, this);
+            mSelectHelper.initSelectPositions(data);
+            this.mSelector = null;
+        }
+    }
+
+    /**
+     * get the selector
+     * @return the selector
+     * @since 2.0.7
+     */
+    public Selector<T> getSelector(){
+        return mSelector;
     }
 
     protected int getHeaderSize() {
@@ -341,12 +382,16 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
 
     @RemoveObservableMethod
     public void replaceAllItems(List<? extends T> items) {
-        mSelectHelper.clearSelectedState();
         final boolean hasObserver = observeAllItems();
         mDatas.clear();
         mDatas.addAll(items);
-        mSelectHelper.initSelectPositions(items);
-
+        if(mSelectHelper != null){
+            mSelectHelper.clearSelectedPosition();
+            mSelectHelper.initSelectPositions(items);
+        }else if(mSelector != null){
+            mSelector.getSelects().clear();
+            mSelector.initialize(items);
+        }
         if (hasObserver) {
             mRemovedObservable.notifyItemRangeRemoved();
         }

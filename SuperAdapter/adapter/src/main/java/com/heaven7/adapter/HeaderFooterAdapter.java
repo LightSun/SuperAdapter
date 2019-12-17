@@ -11,14 +11,17 @@ import android.view.ViewGroup;
 import com.heaven7.adapter.util.ViewHelper2;
 import com.heaven7.core.util.ViewHelper;
 
+import java.util.ArrayList;
+
 /**
  * the adapter just wrap the header and footer
  * @author heaven7
  * @since 2.0.5
  */
 public abstract class HeaderFooterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements AdapterManager.IHeaderFooterManager, IPartUpdater{
+        implements AdapterManager.IHeaderFooterManager, IPartUpdater, AdapterAttachStateManager{
 
+    private ArrayList<AdapterAttachStateManager.OnAttachStateChangeListener> mStateListeners;
     private HeaderFooterHelper mHeaderFooterHelper;
     private Callback mCallback;
 
@@ -155,6 +158,44 @@ public abstract class HeaderFooterAdapter extends RecyclerView.Adapter<RecyclerV
         super.onViewDetachedFromWindow(holder);
         if (holder instanceof QuickRecycleViewAdapter.IRecyclerViewHolder) {
             ((QuickRecycleViewAdapter.IRecyclerViewHolder) holder).getViewHelper().getRootView().clearAnimation();
+        }
+    }
+
+    @Override
+    public void addOnAttachStateChangeListener(AdapterAttachStateManager.OnAttachStateChangeListener l) {
+        if(mStateListeners == null){
+            mStateListeners = new ArrayList<>();
+        }
+        mStateListeners.add(l);
+    }
+    @Override
+    public void removeOnAttachStateChangeListener(AdapterAttachStateManager.OnAttachStateChangeListener l) {
+        if(mStateListeners != null){
+            mStateListeners.remove(l);
+        }
+    }
+    @Override
+    public boolean hasOnAttachStateChangeListener(AdapterAttachStateManager.OnAttachStateChangeListener l) {
+        return mStateListeners != null && mStateListeners.contains(l);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        if(mStateListeners != null && mStateListeners.size() > 0) {
+            for (AdapterAttachStateManager.OnAttachStateChangeListener l : mStateListeners) {
+                l.onAttachedToRecyclerView(recyclerView, this);
+            }
+        }
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        if(mStateListeners != null && mStateListeners.size() > 0) {
+            for (AdapterAttachStateManager.OnAttachStateChangeListener l : mStateListeners) {
+                l.onDetachedFromRecyclerView(recyclerView, this);
+            }
         }
     }
     /**
