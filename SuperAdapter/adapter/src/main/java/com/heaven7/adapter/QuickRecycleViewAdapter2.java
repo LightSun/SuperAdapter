@@ -23,7 +23,7 @@ import java.util.List;
  * @param <T> the item type
  * @since 2.0.7
  */
-public abstract class QuickRecycleViewAdapter2<T extends ISelectable>  extends HeaderFooterAdapter
+public class QuickRecycleViewAdapter2<T extends ISelectable>  extends HeaderFooterAdapter
         implements AdapterManager.IAdapterManagerCallback, AdapterManager.IHeaderFooterManager,
         AdapterManager.IAdapterManagerCallback2, HeaderFooterAdapter.Callback  {
 
