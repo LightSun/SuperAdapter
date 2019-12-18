@@ -71,6 +71,7 @@ public class Selector<T extends ISelectable> {
         }
     }
     public void initialize(List<? extends T> data) {
+        mList.clear();
         for (T t : data){
             if(t.isSelected()){
                 mList.add(t);

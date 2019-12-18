@@ -17,9 +17,8 @@ import java.util.List;
  * the old selector is {@linkplain SelectHelper}.
  * </li>
  * <li> second,
- *     add {@linkplain #setItemTypeDelegate(ItemTypeDelegate)} and {@linkplain #setItemBindDelegate(ItemBindDelegate)}.
+ *     add {@linkplain #setItemTypeDelegate(ItemTypeDelegate)}.
  *     <p>see {@linkplain ItemTypeDelegate} </p>
- *     <p>see {@linkplain ItemBindDelegate} </p>
  * </li>
  * @param <T> the item type
  * @since 2.0.7
@@ -31,7 +30,6 @@ public abstract class QuickRecycleViewAdapter2<T extends ISelectable>  extends H
     private int mLayoutId = 0;
     private AdapterManager<T> mAdapterManager;
     private ItemTypeDelegate<T> mTypeDelegate;
-    private ItemBindDelegate<T> mBindDelegate;
 
     /**
      * create QuickRecycleViewAdapter with the layout id. if layoutId==0, the method
@@ -75,10 +73,6 @@ public abstract class QuickRecycleViewAdapter2<T extends ISelectable>  extends H
     public void setItemTypeDelegate(ItemTypeDelegate<T> mTypeDelegate) {
         this.mTypeDelegate = mTypeDelegate;
     }
-    public void setItemBindDelegate(ItemBindDelegate<T> mBindDelegate) {
-        this.mBindDelegate = mBindDelegate;
-    }
-
     /**
      * get selector
      * @return the selector
@@ -190,8 +184,8 @@ public abstract class QuickRecycleViewAdapter2<T extends ISelectable>  extends H
      * @since 1.8.9
      */
     protected void onBindData(Context context, int position, T item, int itemLayoutId, ViewHelper2 helper){
-        if(mBindDelegate != null){
-            mBindDelegate.onBindData(this, context, position, item, itemLayoutId, helper);
+        if(mTypeDelegate != null){
+            mTypeDelegate.onBindData(this, context, position, item, itemLayoutId, helper);
         }
     }
 
@@ -199,7 +193,7 @@ public abstract class QuickRecycleViewAdapter2<T extends ISelectable>  extends H
      * item type delegate
      * @param <T> the item type
      */
-    public interface ItemTypeDelegate<T> {
+    public interface ItemTypeDelegate<T extends ISelectable> {
         /**
          * get item layout id
          *
@@ -208,13 +202,7 @@ public abstract class QuickRecycleViewAdapter2<T extends ISelectable>  extends H
          * @return the item layout id.
          */
         int getItemLayoutId(int position, T item);
-    }
 
-    /**
-     * the item bind delegate
-     * @param <T> the item
-     */
-    public interface ItemBindDelegate<T extends ISelectable> {
         /**
          * called on bind parent data
          *
@@ -225,5 +213,21 @@ public abstract class QuickRecycleViewAdapter2<T extends ISelectable>  extends H
          * @param helper       the helper
          */
         void onBindData(QuickRecycleViewAdapter2<T> adapter, Context context, int position, T item, int itemLayoutId, ViewHelper2 helper);
+    }
+    /**
+     * item type delegate
+     * @param <T> the item type
+     */
+    public static abstract class BaseItemTypeDelegate<T extends ISelectable> implements ItemTypeDelegate<T>{
+
+        private final int layoutId;
+
+        public BaseItemTypeDelegate(int layoutId) {
+            this.layoutId = layoutId;
+        }
+        @Override
+        public int getItemLayoutId(int position, T item) {
+            return layoutId;
+        }
     }
 }
