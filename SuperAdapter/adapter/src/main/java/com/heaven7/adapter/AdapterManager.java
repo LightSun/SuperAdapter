@@ -79,7 +79,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
                 }
             });
             this.mSelector.setSingleMode(selectMode == ISelectable.SELECT_MODE_SINGLE);
-            this.mSelector.initialize(data);
+            this.mSelector.initialize(this.mDatas);
         }else {
             mSelectHelper = new SelectHelper<T>(selectMode, this);
             mSelectHelper.initSelectPositions(data);
