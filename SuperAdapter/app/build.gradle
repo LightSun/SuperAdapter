@@ -52,4 +52,6 @@ dependencies {
     implementation "com.jakewharton:butterknife:${butterknife}"
     annotationProcessor "com.jakewharton:butterknife-compiler:${butterknife}"
     implementation project(':adapter')
+
+    implementation 'com.heaven7.java.pc:Produce-consume:1.0.0'
 }
