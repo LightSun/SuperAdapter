@@ -179,7 +179,7 @@ public class CountDownManager<T extends CountDownManager.ICountDownItem> {
             if(mExecutor == null){
                 mExecutor = Executors.newSingleThreadScheduledExecutor();
             }
-            return mExecutor.schedule(task, period, TimeUnit.MILLISECONDS);
+            return mExecutor.scheduleAtFixedRate(task, 0, period, TimeUnit.MILLISECONDS);
         }
 
         @Override
