@@ -36,9 +36,10 @@ public class CountDownManager<T extends CountDownManager.ICountDownItem> {
                     i--;
                     size--;
                 }else {
+                    long value = mCallback.next(t);
+                    t.setCurrentTime(value);
+                    //if visible update ui.
                     if(mCallback.isItemVisible(t)){
-                        long value = mCallback.next(t);
-                        t.setCurrentTime(value);
                         mUpdateCallback.update(t, value);
                     }
                 }
