@@ -26,7 +26,7 @@ public class CountDownManager<T extends CountDownManager.ICountDownItem> {
         @Override
         public void run() {
             if(DEBUG){
-                long startTime = mCallback.getCurrentTimeMillis();
+                long startTime = SystemClock.elapsedRealtime();
                 System.out.println("CountDownManager: startTime (in seconds) = " + startTime / 1000);
             }
             for(int i = 0 , size = mItems.size() ; i < size ; i ++){
@@ -48,8 +48,10 @@ public class CountDownManager<T extends CountDownManager.ICountDownItem> {
     };
     private Object mScheduleObject;
 
-
     public CountDownManager(Callback<T> mCallback, Updater<T> updater) {
+        if(mCallback == null || updater == null){
+            throw new NullPointerException();
+        }
         this.mCallback = mCallback;
         this.mUpdateCallback = updater;
     }
@@ -57,6 +59,9 @@ public class CountDownManager<T extends CountDownManager.ICountDownItem> {
         this(new SimpleCallback<T>(), updater);
     }
     public void setScheduler(IScheduler scheduler){
+        if(scheduler == null){
+            throw new NullPointerException();
+        }
         this.mScheduler = scheduler;
     }
     public void addItem(T item){
@@ -112,11 +117,6 @@ public class CountDownManager<T extends CountDownManager.ICountDownItem> {
      * @param <T> the count down item type
      */
     public interface Callback<T extends CountDownManager.ICountDownItem>{
-        /**
-         * get current time in mills
-         * @return the current time
-         */
-        long getCurrentTimeMillis();
         /**
          * indicate the item is visible or not.
          * @param item the item
@@ -194,10 +194,6 @@ public class CountDownManager<T extends CountDownManager.ICountDownItem> {
         }
     }
     public static class SimpleCallback<T extends ICountDownItem> implements Callback<T>{
-        @Override
-        public long getCurrentTimeMillis() {
-            return SystemClock.elapsedRealtime();
-        }
         @Override
         public boolean isItemVisible(T item) {
             return true;
