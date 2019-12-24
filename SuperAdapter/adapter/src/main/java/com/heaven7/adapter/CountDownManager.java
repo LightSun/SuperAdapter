@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * the count down manager
  * @param <T> the count down item
  * @author heaven7
- * @since 1.1.7
+ * @since 2.0.8
  */
 public class CountDownManager<T extends CountDownManager.ICountDownItem> {
 
