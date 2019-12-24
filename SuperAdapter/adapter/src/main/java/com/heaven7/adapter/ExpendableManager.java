@@ -22,7 +22,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     }
 
     @Override
-    public int indexOfChildItem(Object childItem) {
+    public int indexOfChildItemReally(Object childItem) {
         int parentSize = mDatas.size();
         int index = -1;
         for (int i = 0; i < parentSize; i++) {
@@ -39,6 +39,26 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
                     }else {
                         index += items.size();
                     }
+                }
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int indexOfParentItemReally(T item) {
+        int parentSize = mDatas.size();
+        int index = -1;
+        for (int i = 0; i < parentSize; i++) {
+            T t = mDatas.get(i);
+            index += 1;
+            if(t.equals(item)){
+                return index;
+            }
+            if (t instanceof ExpendableAdapter.ExpendableItem) {
+                ExpendableAdapter.ExpendableItem ei = (ExpendableAdapter.ExpendableItem) t;
+                if (ei.isExpended()) {
+                    index += ei.getChildItems().size();
                 }
             }
         }

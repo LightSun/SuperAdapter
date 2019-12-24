@@ -16,7 +16,15 @@ public interface IExpendableManager<T> {
      * @return the index. -1 means not found
      * @since 2.0.9
      */
-    int indexOfChildItem(Object childItem);
+    int indexOfChildItemReally(Object childItem);
+
+    /**
+     * get the actually index for parent item
+     * @param item the parent item
+     * @return the index. -1 means not found
+     * @since 2.0.9
+     */
+    int indexOfParentItemReally(T item);
     /**
      * toggle expend
      * @param data the parent data
