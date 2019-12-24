@@ -9,6 +9,14 @@ import java.util.List;
  */
 public interface IExpendableManager<T> {
 
+
+    /**
+     * get the actually index for child item
+     * @param childItem the child item
+     * @return the index. -1 means not found
+     * @since 2.0.9
+     */
+    int indexOfChildItem(Object childItem);
     /**
      * toggle expend
      * @param data the parent data

@@ -22,6 +22,30 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
     }
 
     @Override
+    public int indexOfChildItem(Object childItem) {
+        int parentSize = mDatas.size();
+        int index = -1;
+        for (int i = 0; i < parentSize; i++) {
+            T t = mDatas.get(i);
+            index += 1;
+            if (t instanceof ExpendableAdapter.ExpendableItem) {
+                ExpendableAdapter.ExpendableItem ei = (ExpendableAdapter.ExpendableItem) t;
+                if (ei.isExpended()) {
+                    List<?> items = ei.getChildItems();
+                    int childIndex = items.indexOf(childItem);
+                    if(childIndex >= 0){
+                        index += childIndex;
+                        return index;
+                    }else {
+                        index += items.size();
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    @Override
     public boolean toggleExpend(T data, int position) {
         if(data instanceof ExpendableAdapter.ExpendableItem){
             ExpendableAdapter.ExpendableItem ei = (ExpendableAdapter.ExpendableItem) data;
