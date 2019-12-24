@@ -80,8 +80,10 @@ public class CountDownManager<T extends CountDownManager.ICountDownItem> {
         cancelAll(true);
     }
     public void cancelAll(boolean clearItems) {
-        mScheduler.cancel(mScheduleObject);
-        mScheduleObject = null;
+        if(mScheduleObject != null){
+            mScheduler.cancel(mScheduleObject);
+            mScheduleObject = null;
+        }
         if(clearItems){
             mItems.clear();
         }
