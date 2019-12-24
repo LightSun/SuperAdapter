@@ -12,10 +12,6 @@ public class SimpleCountDownItem extends BaseSelector implements CountDownManage
         this.due = due;
     }
     @Override
-    public long getEndTime() {
-        return 0;
-    }
-    @Override
     public long getCurrentTime() {
         if(currentTime == Long.MIN_VALUE){
             return due;

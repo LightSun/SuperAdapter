@@ -2,7 +2,6 @@ package com.heaven7.core.adapter.demo;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -51,8 +50,8 @@ public class TestCountDownActivity extends AppCompatActivity {
 
         setAdapter();
 
-        mCDM = new CountDownManager<>(new Callback0(), new UpdateCallback0());
-        mCDM.setScheduerCallback(new SimpleScheduler());
+        mCDM = new CountDownManager<>(new UpdateCallback0());
+        mCDM.setScheduler(new SimpleScheduler());
         mCDM.start();
     }
 
@@ -125,7 +124,7 @@ public class TestCountDownActivity extends AppCompatActivity {
             helper.setText(android.R.id.text1, item.getCurrentTime() / 1000 +"");
         }
     }
-    private class UpdateCallback0 implements CountDownManager.UpdateCallback<SimpleCountDownItem>{
+    private class UpdateCallback0 implements CountDownManager.Updater<SimpleCountDownItem> {
         @Override
         public void update(SimpleCountDownItem item, long value) {
              MainWorker.post(new Runnable() {
@@ -136,45 +135,18 @@ public class TestCountDownActivity extends AppCompatActivity {
              });
         }
     }
-
-    private class Callback0 implements CountDownManager.Callback<SimpleCountDownItem>{
-        @Override
-        public long getCurrentTimeMillis() {
-            return SystemClock.elapsedRealtime();
-        }
-        @Override
-        public boolean isItemVisible(SimpleCountDownItem item) {
-            return true;
-        }
-        @Override
-        public long getCountDownPeriod() {
-            return 1000;
-        }
-        @Override
-        public boolean shouldEnd(long cur, long end) {
-            return cur <= 0;
-        }
-        @Override
-        public long next(SimpleCountDownItem item, long current, long end) {
-            return current - getCountDownPeriod();
-        }
-    }
-    private class SimpleScheduler implements CountDownManager.SchedulerCallback{
-
-        private Disposable mDispose;
+    private class SimpleScheduler implements CountDownManager.IScheduler {
 
         @Override
-        public void schedulePeriodically(Runnable task, long period) {
-            mDispose = Schedulers.single()
+        public Object schedulePeriodically(Runnable task, long period) {
+            return Schedulers.single()
                     .newWorker()
                     .schedulePeriodically(task, 0 , period, TimeUnit.MILLISECONDS);
         }
         @Override
-        public void cancel() {
-            if(mDispose != null){
-                mDispose.dispose();
-                mDispose = null;
-            }
+        public void cancel(Object result) {
+            Disposable dis = (Disposable) result;
+            dis.dispose();
         }
     }
 }
