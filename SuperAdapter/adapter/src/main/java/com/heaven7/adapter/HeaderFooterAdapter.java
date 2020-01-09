@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 /**
  * the adapter just wrap the header and footer
+ * <p>Note: Sub-class must call {@linkplain #setCallback(Callback)} before any call.</p>
  * @author heaven7
  * @since 2.0.5
  */
