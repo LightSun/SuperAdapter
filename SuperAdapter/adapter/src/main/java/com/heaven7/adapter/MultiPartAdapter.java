@@ -40,7 +40,7 @@ public class MultiPartAdapter extends HeaderFooterAdapter {
         ViewHolder vh = (ViewHolder) holder;
         PartDelegate part = findPart(position);
         int partPosition = getPartPosition(position);
-        part.onBindData(vh.getContext(), partPosition, vh.getViewHelper());
+        part.onBindData(this, vh.getContext(), partPosition, vh.getViewHelper());
     }
     @Override
     protected int getItemViewTypeImpl(HeaderFooterHelper hfHelper, int position) {
@@ -116,10 +116,11 @@ public class MultiPartAdapter extends HeaderFooterAdapter {
 
         /**
          * called on bind data
+         * @param adapter the multi part adapter
          * @param context the context
          * @param partPosition the position
          * @param helper the view helper.
          */
-        void onBindData(Context context, int partPosition, ViewHelper2 helper);
+        void onBindData(MultiPartAdapter adapter, Context context, int partPosition, ViewHelper2 helper);
     }
 }
