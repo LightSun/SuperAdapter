@@ -121,6 +121,7 @@ public abstract class HeaderFooterAdapter extends RecyclerView.Adapter<RecyclerV
             return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(
                     viewType, parent, false), viewType);
         } else {
+            //header or footer
             return new ViewHolder(hfHelper.findView(viewType, mCallback.getActuallyItemSize()));
         }
     }
