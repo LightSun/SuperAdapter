@@ -22,6 +22,14 @@ public class Selector<T extends ISelectable> {
         mCallbacks.add(mCallback);
     }
 
+    /**
+     * get callbacks
+     * @return the callbacks
+     * @since 2.0.9
+     */
+    public List<Callback<T>> getCallbacks(){
+        return mCallbacks;
+    }
     public void addCallback(Callback<T> cb){
         if(!mCallbacks.contains(cb)){
             mCallbacks.add(cb);
