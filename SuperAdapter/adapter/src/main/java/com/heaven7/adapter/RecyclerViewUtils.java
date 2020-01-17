@@ -5,6 +5,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * the util class of RecyclerView
@@ -62,7 +64,6 @@ public class RecyclerViewUtils {
         return position != Integer.MAX_VALUE ?  position : RecyclerView.NO_POSITION;
     }
 
-
     /**
      * create FullSpannableStaggeredGridLayoutManager and set ISpanSizeLookupHelper for full span of header/footer.
      * @param hfm the header/footer manager
@@ -89,4 +90,65 @@ public class RecyclerViewUtils {
         lm.setSpanSizeLookup(new HeaderFooterSpanSizeLookUp(hfm,spanCount));
         return lm;
     }
+
+    /*
+     * get the whole scroll y distance of recycler view
+     * @param rv the recycler view
+     * @param strictly true if you want to get it strictly. for false it only support the items height are the same.
+     * @return the scroll y
+     * @since 2.1.0
+     */
+    /*public static int getScrollY(RecyclerView rv, boolean strictly) {
+        RecyclerView.LayoutManager lm = rv.getLayoutManager();
+        int firstVisiblePosition = findFirstVisibleItemPosition(rv);
+        View child = lm.findViewByPosition(firstVisiblePosition);
+        final int itemHeight;
+        ViewGroup.LayoutParams clp = child.getLayoutParams();
+        if(clp instanceof ViewGroup.MarginLayoutParams){
+            ViewGroup.MarginLayoutParams vmp = (ViewGroup.MarginLayoutParams)clp;
+            itemHeight = child.getHeight() + vmp.topMargin + vmp.bottomMargin;
+        }else {
+            itemHeight = child.getHeight();
+        }
+        if(firstVisiblePosition == 0){
+            return child.getTop();
+        }
+        if(strictly){
+            if(lm instanceof GridLayoutManager){
+                GridLayoutManager glm = (GridLayoutManager) lm;
+                if(glm.getOrientation() == LinearLayoutManager.VERTICAL){
+                    int spanCount = glm.getSpanCount();
+                    int preRowCount = firstVisiblePosition / spanCount;
+                    return preRowCount * itemHeight - child.getTop();
+                }else {
+                    return child.getTop();
+                }
+            }else if(lm instanceof LinearLayoutManager){
+                if(((LinearLayoutManager) lm).getOrientation() == LinearLayoutManager.VERTICAL){
+                    return (firstVisiblePosition) * itemHeight - child.getTop();
+                }
+                return child.getTop();
+            }else if(lm instanceof StaggeredGridLayoutManager){
+                StaggeredGridLayoutManager sglm = (StaggeredGridLayoutManager)lm;
+                if(sglm.getOrientation() == StaggeredGridLayoutManager.VERTICAL){
+                    int spanCount = sglm.getSpanCount();
+                    int preRowCount = firstVisiblePosition / spanCount;
+                    if(preRowCount == 0){
+                        return child.getTop();
+                    }
+                    int preHeight = 0;
+                    for (int i = 0 ; i < preRowCount ; i ++){
+                        int start = i * spanCount;
+                        for (int k = 0 ; k < spanCount ; k++ ){
+                            // lm.findViewByPosition()
+                        }
+                    }
+                }
+                return 0;
+            }else {
+                throw new UnsupportedOperationException("un support layout manager");
+            }
+        }
+        return (firstVisiblePosition) * itemHeight - child.getTop();
+    }*/
 }

@@ -3,11 +3,13 @@ package com.heaven7.adapter;
 import java.util.List;
 
 /**
+ * <p>Use {@linkplain Selector} instead.</p>
  * the select helper interface.
  * Created by heaven7 on 2017/1/9.
  *
  * @since 1.8.5
  */
+@Deprecated
 public interface ISelectHelper {
 
     int NO_POSITION = -1;

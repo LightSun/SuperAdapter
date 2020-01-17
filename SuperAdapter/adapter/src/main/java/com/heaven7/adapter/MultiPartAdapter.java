@@ -1,6 +1,7 @@
 package com.heaven7.adapter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import com.heaven7.adapter.util.ViewHelper2;
@@ -13,88 +14,69 @@ import java.util.List;
  * @author heaven7
  * @since 2.0.9
  */
-public class MultiPartAdapter extends HeaderFooterAdapter {
+public class MultiPartAdapter extends HeaderFooterAdapter implements HeaderFooterAdapter.Callback {
 
-    private final PartDelegate mSpace;
-    private final List<? extends PartDelegate> mParts;
-
-    public MultiPartAdapter(PartDelegate spacePart, List<? extends PartDelegate> parts) {
-        setCallback(new Callback() {
-            @Override
-            public int getActuallyItemSize() {
-                return getItemCount0();
-            }
-        });
-        this.mSpace = spacePart;
-        this.mParts = parts != null ? parts : new ArrayList<PartDelegate>();
+    private final MultiPartManager mMPM;
+    /**
+     * create adapter by space part and multi other parts
+     * @param spacePart the space part, can be null.
+     * @param parts the parts
+     */
+    public MultiPartAdapter(@Nullable PartDelegate spacePart, List<? extends PartDelegate> parts) {
+        this.mMPM = new MultiPartManager(this, spacePart, parts);
+        setCallback(this);
     }
     public MultiPartAdapter(PartDelegate spacePart){
         this(spacePart, new ArrayList<PartDelegate>());
     }
 
+    public MultiPartManager getMultiPartManager(){
+        return mMPM;
+    }
+    /**
+     * set the parts. this will auto notify data changed.
+     * @param parts the parts
+     * @since 2.1.0
+     */
+    public void setParts(List<? extends PartDelegate> parts){
+        mMPM.setParts(parts);
+    }
+    /**
+     * get the index of item.
+     * @param item the item
+     * @return the index of item. or -1 mean not found.
+     * @since 2.1.0
+     */
+    public int indexOf(ISelectable item) {
+        return mMPM.indexOf(item);
+    }
     public List<? extends PartDelegate> getParts() {
-        return mParts;
+        return mMPM.getParts();
+    }
+    /**
+     * get the space part
+     * @return the space part
+     * @since 2.1.0
+     */
+    public PartDelegate getSpacePart(){
+        return mMPM.getSpacePart();
     }
 
     protected void onBindViewHolderImpl(RecyclerView.ViewHolder holder, int position) {
         ViewHolder vh = (ViewHolder) holder;
-        PartDelegate part = findPart(position);
-        int partPosition = getPartPosition(position);
+        PartDelegate part = mMPM.findPart(position);
+        int partPosition = mMPM.getPartPosition(position);
         part.onBindData(this, vh.getContext(), partPosition, vh.getViewHelper());
     }
     @Override
     protected int getItemViewTypeImpl(HeaderFooterHelper hfHelper, int position) {
-        PartDelegate part = findPart(position);
+        PartDelegate part = mMPM.findPart(position);
         return part.getLayoutId();
     }
 
-    private int getItemCount0() {
-        final int size = mParts.size();
-        int total = 0;
-        for (int i = 0; i < size; i++) {
-            total += mParts.get(i).getItems().size();
-        }
-        return total + size - 1;
-    }
-
-    private PartDelegate findPart(int position) {
-        int index = 0;
-        final int size = mParts.size();
-        for (int i = 0; i < size; i++) {
-            PartDelegate part = mParts.get(i);
-            int delta = part.getItems().size();
-
-            if (position >= index && position < index + delta) {
-                return part;
-            }
-            index += delta;
-            if(position == index){
-                return mSpace;
-            }
-            if(i != size - 1){
-                index += 1;
-            }
-        }
-        throw new IllegalStateException("can't find part for position = "+ position);
-    }
-    private int getPartPosition(int position) {
-        int index = 0;
-        final int size = mParts.size();
-        for (int i = 0; i < size; i++) {
-            PartDelegate part = mParts.get(i);
-            int delta = part.getItems().size();
-            if (position >= index && position < index + delta) {
-                return position - index;
-            }
-            index += delta;
-            if(position == index){
-                return 0;
-            }
-            if(i != size - 1){
-                index += 1;
-            }
-        }
-        throw new IllegalStateException("can't find part for position = "+ position);
+    @Override
+    public int getActuallyItemSize() {
+        return mMPM.getItemCount();
     }
 
     /**
