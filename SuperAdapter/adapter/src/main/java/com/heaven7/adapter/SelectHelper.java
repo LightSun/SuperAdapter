@@ -1,9 +1,10 @@
 package com.heaven7.adapter;
 
 import android.content.Context;
-import android.support.annotation.IntDef;
-import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
+
+import androidx.annotation.IntDef;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.heaven7.adapter.selector.MultiSelectHelper;
 import com.heaven7.adapter.selector.SingleSelectHelper;

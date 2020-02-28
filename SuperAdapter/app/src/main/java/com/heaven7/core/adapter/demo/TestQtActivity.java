@@ -1,7 +1,8 @@
 package com.heaven7.core.adapter.demo;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.vida.android.util.Reflection;
 

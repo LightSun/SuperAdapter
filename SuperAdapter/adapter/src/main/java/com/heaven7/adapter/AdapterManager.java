@@ -17,9 +17,10 @@
 package com.heaven7.adapter;
 
 import android.database.Observable;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewParent;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.heaven7.core.util.ViewHelper;
 

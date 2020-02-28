@@ -2,10 +2,11 @@ package com.heaven7.adapter.drag;
 
 
 import android.graphics.Canvas;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.heaven7.adapter.ISelectable;
 import com.heaven7.adapter.QuickRecycleViewAdapter;
@@ -66,7 +67,7 @@ public abstract class BaseItemTouchCallback extends WItemTouchHelperPlus.SimpleC
 
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
-                                @NonNull RecyclerView.ViewHolder target) {
+                          @NonNull RecyclerView.ViewHolder target) {
         int pos = viewHolder.getAdapterPosition();
         int pos2 = target.getAdapterPosition();
         if(pos < 0 || pos2 < 0){

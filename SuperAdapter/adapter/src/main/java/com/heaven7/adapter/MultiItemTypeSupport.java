@@ -16,7 +16,6 @@
  */
 package com.heaven7.adapter;
 
-import android.support.annotation.LayoutRes;
 
 /**
  * used to multi item support. such as: Listview contains two items
@@ -32,7 +31,7 @@ public interface MultiItemTypeSupport<T> {
 	 * @param t  the data
      * @return  the layout id for multi item.
      */
-	@LayoutRes int getLayoutId(int position, T t);
+	int getLayoutId(int position, T t);
 
 	/**
 	 * get thw view type count.

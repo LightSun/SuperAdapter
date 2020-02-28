@@ -6,7 +6,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -244,7 +243,7 @@ public class ViewHelper2 extends ViewHelper {
 	public ViewHelper2 setImageTintColor(int viewId, int color){
 		return locateView(viewId).setImageTintColor(color).reverse(this);
 	}
-	public ViewHelper2 setImageTintList(int viewId, @Nullable ColorStateList tint){
+	public ViewHelper2 setImageTintList(int viewId, ColorStateList tint){
 		return locateView(viewId).setImageTintList(tint).reverse(this);
 	}
 	public ViewHelper2 setImageTintMode(int viewId, PorterDuff.Mode mode){
@@ -253,13 +252,13 @@ public class ViewHelper2 extends ViewHelper {
 	public ViewHelper2 setBackgroundTintColor(int viewId, int color){
 		return locateView(viewId).setBackgroundTintColor(color).reverse(this);
 	}
-	public ViewHelper2 setBackgroundTintList(int viewId, @Nullable ColorStateList tint){
+	public ViewHelper2 setBackgroundTintList(int viewId,  ColorStateList tint){
 		return locateView(viewId).setBackgroundTintList(tint).reverse(this);
 	}
 	public ViewHelper2 setBackgroundTintMode(int viewId, PorterDuff.Mode mode){
 		return locateView(viewId).setBackgroundTintMode(mode).reverse(this);
 	}
-	public ViewHelper2 setForegroundTintList(int viewId, @Nullable ColorStateList tint){
+	public ViewHelper2 setForegroundTintList(int viewId,  ColorStateList tint){
 		return locateView(viewId).setForegroundTintList(tint).reverse(this);
 	}
 	public ViewHelper2 setForegroundTintMode(int viewId, PorterDuff.Mode mode){

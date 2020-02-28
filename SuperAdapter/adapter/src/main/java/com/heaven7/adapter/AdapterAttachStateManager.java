@@ -1,6 +1,6 @@
 package com.heaven7.adapter;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  *  a manager to manage the attach state of adapter

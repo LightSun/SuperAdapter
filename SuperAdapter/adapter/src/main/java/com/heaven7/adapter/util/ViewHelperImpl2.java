@@ -3,10 +3,11 @@ package com.heaven7.adapter.util;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
 
 import com.heaven7.core.util.ViewHelperImpl;
 

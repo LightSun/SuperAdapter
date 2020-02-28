@@ -16,7 +16,6 @@ import java.util.List;
  * <p>recommend you use {@linkplain ExpendableAdapter} instead.</p>
  * Created by heaven7 on 2015/8/27.
  */
-@Deprecated
 public abstract class QuickExpandListAdapter<Group,Child> extends BaseExpandableListAdapter {
 
     private List<IExpandListItem<Group,Child>> mItems;

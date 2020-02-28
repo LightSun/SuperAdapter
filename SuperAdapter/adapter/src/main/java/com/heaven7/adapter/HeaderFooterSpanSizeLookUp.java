@@ -1,6 +1,6 @@
 package com.heaven7.adapter;
 
-import android.support.v7.widget.GridLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 /**
  * for resolve one line in GridLayoutManager

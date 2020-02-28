@@ -17,8 +17,8 @@
 package com.heaven7.adapter;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.heaven7.adapter.util.ViewHelper2;
 import com.heaven7.core.util.ViewHelper;
@@ -26,7 +26,7 @@ import com.heaven7.core.util.ViewHelper;
 import java.util.List;
 
 /**
- * the quick adapter of {@link RecyclerView}. help we fast build a adapter.
+ * the quick adapter of  RecyclerView. help we fast build a adapter.
  * Created by heaven7 on 2015/8/26.
  *
  * @param <T> the data
@@ -254,9 +254,7 @@ public abstract class QuickRecycleViewAdapter<T extends ISelectable> extends Hea
      * @param t        the data
      * @return this item layout id
      **/
-    protected
-    @LayoutRes
-    int getItemLayoutId(int position, T t) {
+    protected int getItemLayoutId(int position, T t) {
         return mLayoutId;
     }
 

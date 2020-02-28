@@ -1,7 +1,8 @@
 package com.heaven7.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.heaven7.adapter.util.ViewHelper2;
 
