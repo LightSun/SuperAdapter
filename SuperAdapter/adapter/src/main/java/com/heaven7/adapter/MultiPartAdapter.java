@@ -1,8 +1,9 @@
 package com.heaven7.adapter;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.heaven7.adapter.util.ViewHelper2;
 

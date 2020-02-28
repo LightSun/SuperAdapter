@@ -33,12 +33,12 @@
         android:text="random change"
         />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         >
-    </android.support.v7.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>
