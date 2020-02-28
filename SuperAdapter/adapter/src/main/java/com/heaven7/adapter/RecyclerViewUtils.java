@@ -1,12 +1,13 @@
 package com.heaven7.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 /**
  * the util class of RecyclerView
@@ -78,7 +79,7 @@ public class RecyclerViewUtils {
         return lm;
     }
     /**
-     * create GridLayoutManager and set {@link android.support.v7.widget.GridLayoutManager.SpanSizeLookup} for full span of header/footer.
+     * create GridLayoutManager and set SpanSizeLookup for full span of header/footer.
      * @param hfm the header/footer manager
      * @param spanCount the really span count of layoutManager
      * @param context the context.

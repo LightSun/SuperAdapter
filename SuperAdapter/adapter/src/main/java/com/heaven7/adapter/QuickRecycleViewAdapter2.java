@@ -1,8 +1,8 @@
 package com.heaven7.adapter;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.heaven7.adapter.util.ViewHelper2;
 import com.heaven7.core.util.ViewHelper;
@@ -167,7 +167,6 @@ public class QuickRecycleViewAdapter2<T extends ISelectable>  extends HeaderFoot
      * @return this item layout id
      **/
     protected
-    @LayoutRes
     int getItemLayoutId(int position, T t) {
         if(mTypeDelegate != null){
             return mTypeDelegate.getItemLayoutId(position, t);
