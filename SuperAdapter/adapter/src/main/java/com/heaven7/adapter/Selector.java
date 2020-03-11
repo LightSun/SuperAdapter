@@ -10,15 +10,26 @@ import java.util.List;
  */
 public class Selector<T extends ISelectable> {
 
-    private final List<Callback<T>> mCallbacks = new ArrayList<>(3);
+    private final List<Callback<T>> mCallbacks;
     private final List<T> mList = new ArrayList<>();
     /**
      * true if is single select mode. false for multi mode.
      * */
     private boolean mSingleMode;
 
-    public Selector(){}
+    /**
+     * create selector with target list
+     * @param list the list
+     * @since 2.1.2
+     */
+    public Selector(List<Callback<T>> list){
+        this.mCallbacks = list;
+    }
+    public Selector(){
+        this(new ArrayList<Callback<T>>(3));
+    }
     public Selector(Callback<T> mCallback) {
+        this();
         mCallbacks.add(mCallback);
     }
 
@@ -57,15 +68,39 @@ public class Selector<T extends ISelectable> {
             oldItem.setSelected(false);
             dispatchUnSelect(oldItem);
         }
-        mList.add(t);
-        t.setSelected(true);
-        dispatchSelect(t);
+        if(mList.add(t)){
+            t.setSelected(true);
+            dispatchSelect(t);
+        }
+    }
+    public void unselect(T t){
+        if(mList.remove(t)){
+            t.setSelected(false);
+            dispatchUnSelect(t);
+        }
     }
 
-    public void unselect(T t){
-        mList.remove(t);
-        t.setSelected(false);
-        dispatchUnSelect(t);
+    /**
+     * select without callback. unless you known the effect of call this function.
+     * As i recommend you use {@linkplain #select(ISelectable)}
+     * @param t the item
+     * @since 2.1.2
+     */
+    public void selectWithoutCallback(T t){
+        if(mList.add(t)){
+            t.setSelected(true);
+        }
+    }
+    /**
+     * unselect without callback. unless you known the effect of call this function.
+     * As i recommend you use {@linkplain #unselect(ISelectable)}
+     * @param t the item
+     * @since 2.1.2
+     */
+    public void unselectWithoutCallback(T t){
+        if(mList.remove(t)){
+            t.setSelected(false);
+        }
     }
 
     public boolean isSelect(T t){
