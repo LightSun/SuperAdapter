@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * most sample as {@linkplain QuickRecycleViewAdapter}.
- * but there are two differents.
+ * but there are three different.
  * <li> first,
  * use new {@linkplain Selector} with not record position, just record the item data.
  * the old selector is {@linkplain SelectHelper}.
@@ -19,6 +19,10 @@ import java.util.List;
  * <li> second,
  *     add {@linkplain #setItemTypeDelegate(ItemTypeDelegate)}.
  *     <p>see {@linkplain ItemTypeDelegate} </p>
+ * </li>
+ * <li>
+ *     support multi adapter share a selector.
+ *     <p>see {@linkplain #QuickRecycleViewAdapter2(int, List, Selector, int)}</p>
  * </li>
  * @param <T> the item type
  * @since 2.0.7
@@ -57,6 +61,27 @@ public class QuickRecycleViewAdapter2<T extends ISelectable>  extends HeaderFoot
         }
         this.mLayoutId = layoutId;
         mAdapterManager = new AdapterManager<T>(mDatas, selectMode, this, true) {
+            @Override
+            public IHeaderFooterManager getHeaderFooterManager() {
+                return QuickRecycleViewAdapter2.this;
+            }
+        };
+        setCallback(this);
+        onFinalInit();
+    }
+
+    /**
+     * create adapter with a shared selector.
+     * @param layoutId the default layout id
+     * @param mDatas the data
+     * @param selector the shared selector
+     * @param selectMode the select mode
+     * @since 2.1.0
+     */
+    public QuickRecycleViewAdapter2(int layoutId, List<T> mDatas, Selector<T> selector, int selectMode) {
+        super();
+        this.mLayoutId = layoutId;
+        mAdapterManager = new AdapterManager<T>(mDatas, selectMode, this, selector) {
             @Override
             public IHeaderFooterManager getHeaderFooterManager() {
                 return QuickRecycleViewAdapter2.this;

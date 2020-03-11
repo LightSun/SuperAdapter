@@ -59,26 +59,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
 
         if(newSelector){
             mSelectHelper = null;
-            this.mSelector = new Selector<>(new Selector.Callback<T>() {
-                @Override
-                public void onSelect(List<T> items, T item) {
-                    int index = mDatas.indexOf(item);
-                    if(index >= 0){
-                        notifyItemChanged(index);
-                    }else {
-                        System.err.println("error occurs: when onSelect item = " + item);
-                    }
-                }
-                @Override
-                public void onUnselect(List<T> items, T item) {
-                    int index = mDatas.indexOf(item);
-                    if(index >= 0){
-                        notifyItemChanged(index);
-                    }else {
-                        System.err.println("error occurs: when onUnselect item = " + item);
-                    }
-                }
-            });
+            this.mSelector = new Selector<>(new SelectCallback0());
             this.mSelector.setSingleMode(selectMode == ISelectable.SELECT_MODE_SINGLE);
             this.mSelector.initialize(this.mDatas);
         }else {
@@ -86,6 +67,16 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
             mSelectHelper.initSelectPositions(data);
             this.mSelector = null;
         }
+    }
+    AdapterManager(List<T> data, int selectMode, IAdapterManagerCallback2 callback2, Selector<T> selector) {
+        this.mDatas = data == null ? new ArrayList<T>() : new ArrayList<T>(data);
+        this.mCallback2 = callback2;
+        //assign selector
+        selector.addCallback(new SelectCallback0());
+        this.mSelector = selector;
+        this.mSelector.setSingleMode(selectMode == ISelectable.SELECT_MODE_SINGLE);
+        this.mSelector.initialize(this.mDatas);
+        this.mSelectHelper = null;
     }
 
     /**
@@ -311,7 +302,7 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
     /**
      * remove the index of the target item. you should careful about the index (is the right index of the adapter ?
      * you can get the actual index by calling {@link RecyclerView.ViewHolder#getAdapterPosition()}
-     * and you can get view holder by calling {@link android.support.v7.widget.RecyclerView#getChildViewHolder(View)}).
+     * and you can get view holder by calling {@link RecyclerView#getChildViewHolder(View)}).
      * but if you can't confirm about the position , please use {@linkplain #removeItemForRecyclerView(View)} intead.
      *
      * @param actualIndex the real index of adapter. you can get the actual index by calling {@link RecyclerView.ViewHolder#getAdapterPosition()}
@@ -575,7 +566,26 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
          */
         void onItemRangeRemoved(List<T> items);
     }
-
+    private class SelectCallback0 implements Selector.Callback<T> {
+        @Override
+        public void onSelect(List<T> items, T item) {
+            int index = mDatas.indexOf(item);
+            if(index >= 0){
+                notifyItemChanged(index);
+            }else {
+                System.err.println("error occurs: when onSelect item = " + item);
+            }
+        }
+        @Override
+        public void onUnselect(List<T> items, T item) {
+            int index = mDatas.indexOf(item);
+            if(index >= 0){
+                notifyItemChanged(index);
+            }else {
+                System.err.println("error occurs: when onUnselect item = " + item);
+            }
+        }
+    }
     /**
      * the internal data removed observable
      *
