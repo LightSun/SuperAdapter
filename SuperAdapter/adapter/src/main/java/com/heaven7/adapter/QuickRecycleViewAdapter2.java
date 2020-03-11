@@ -75,13 +75,12 @@ public class QuickRecycleViewAdapter2<T extends ISelectable>  extends HeaderFoot
      * @param layoutId the default layout id
      * @param mDatas the data
      * @param selector the shared selector
-     * @param selectMode the select mode
-     * @since 2.1.0
+     * @since 2.1.01
      */
-    public QuickRecycleViewAdapter2(int layoutId, List<T> mDatas, Selector<T> selector, int selectMode) {
+    public QuickRecycleViewAdapter2(int layoutId, List<T> mDatas, Selector<T> selector) {
         super();
         this.mLayoutId = layoutId;
-        mAdapterManager = new AdapterManager<T>(mDatas, selectMode, this, selector) {
+        mAdapterManager = new AdapterManager<T>(mDatas, this, selector) {
             @Override
             public IHeaderFooterManager getHeaderFooterManager() {
                 return QuickRecycleViewAdapter2.this;

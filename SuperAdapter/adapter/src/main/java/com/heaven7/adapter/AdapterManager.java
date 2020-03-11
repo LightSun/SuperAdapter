@@ -68,13 +68,13 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
             this.mSelector = null;
         }
     }
-    AdapterManager(List<T> data, int selectMode, IAdapterManagerCallback2 callback2, Selector<T> selector) {
+    AdapterManager(List<T> data, IAdapterManagerCallback2 callback2, Selector<T> selector) {
         this.mDatas = data == null ? new ArrayList<T>() : new ArrayList<T>(data);
         this.mCallback2 = callback2;
         //assign selector
         selector.addCallback(new SelectCallback0());
         this.mSelector = selector;
-        this.mSelector.setSingleMode(selectMode == ISelectable.SELECT_MODE_SINGLE);
+       // this.mSelector.setSingleMode(selectMode == ISelectable.SELECT_MODE_SINGLE);
         this.mSelector.initialize(this.mDatas);
         this.mSelectHelper = null;
     }
