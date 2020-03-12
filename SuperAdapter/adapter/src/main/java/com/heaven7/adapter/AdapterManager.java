@@ -74,8 +74,10 @@ public class AdapterManager<T extends ISelectable> implements SelectHelper.Callb
         //assign selector
         selector.addCallback(new SelectCallback0());
         this.mSelector = selector;
+        //for share selector . we don't init select state . and set select mode.
+        //you can control it your-self.
        // this.mSelector.setSingleMode(selectMode == ISelectable.SELECT_MODE_SINGLE);
-        this.mSelector.initialize(this.mDatas);
+       // this.mSelector.initialize(this.mDatas);
         this.mSelectHelper = null;
     }
 
