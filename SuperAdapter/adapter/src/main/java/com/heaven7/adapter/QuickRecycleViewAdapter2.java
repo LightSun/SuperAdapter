@@ -22,7 +22,7 @@ import java.util.List;
  * </li>
  * <li>
  *     support multi adapter share a selector.
- *     <p>see {@linkplain #QuickRecycleViewAdapter2(int, List, Selector, int)}</p>
+ *     <p>see {@linkplain #QuickRecycleViewAdapter2(int, List, Selector)}</p>
  * </li>
  * @param <T> the item type
  * @since 2.0.7
