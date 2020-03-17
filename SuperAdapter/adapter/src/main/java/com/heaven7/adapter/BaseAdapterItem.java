@@ -28,9 +28,24 @@ public abstract class BaseAdapterItem<T extends ISelectable> {
     public AdapterManager<T> getAdapterManager(){
         return adapter.getAdapterManager();
     }
+
+    /**
+     * get the layout id
+     * @return the layout id
+     */
     public abstract int getLayoutId();
 
+    /**
+     * called on bind view
+     * @param view the view
+     */
     public abstract void bindView(View view);
 
+    /**
+     * called on bind data.
+     * @param context the context
+     * @param position the position
+     * @param data the data
+     */
     public abstract void onBindData(Context context, final int position, final T data);
 }

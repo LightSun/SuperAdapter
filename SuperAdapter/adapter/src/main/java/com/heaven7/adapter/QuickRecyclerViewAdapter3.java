@@ -50,6 +50,9 @@ public class QuickRecyclerViewAdapter3<T extends ISelectable> extends QuickRecyc
         if(mBaseItem != null){
             return mBaseItem.getLayoutId();
         }
+        if(mFactory == null){
+            throw new IllegalStateException("you must call #setAdapterItemFactory(...) first!.");
+        }
         String id = mFactory.getItemTypeId(t);
         BaseAdapterItem<T> item;
         if(id != null){
