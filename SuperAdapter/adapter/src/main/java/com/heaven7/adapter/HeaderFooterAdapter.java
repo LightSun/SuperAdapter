@@ -31,6 +31,14 @@ public abstract class HeaderFooterAdapter extends RecyclerView.Adapter<RecyclerV
         this.mCallback = mCallback;
     }
 
+    /**
+     * get the header footer helper
+     * @return the header footer helper
+     * @since 2.1.1
+     */
+    protected HeaderFooterHelper getHeaderFooterHelper(){
+        return mHeaderFooterHelper;
+    }
     @Override
     public void addHeaderView(View v) {
         if (mHeaderFooterHelper == null)

@@ -13,6 +13,8 @@ public class TestMainActivity extends AbsMainActivity {
         list.add(new ActivityInfo(AudioFxDemo.class));
         list.add(new ActivityInfo(TestExpendAdapterActivity.class));
         list.add(new ActivityInfo(TestCountDownActivity.class));
+        list.add(new ActivityInfo(TestAdapterItemActivity.class));
+        list.add(new ActivityInfo(TestMultiAdapterItemActivity.class));
     }
 
 

@@ -23,6 +23,8 @@
         <activity android:name=".AudioFxDemo"/>
         <activity android:name=".TestExpendAdapterActivity"/>
         <activity android:name=".TestCountDownActivity"/>
+        <activity android:name=".TestAdapterItemActivity"/>
+        <activity android:name=".TestMultiAdapterItemActivity"/>
     </application>
 
 </manifest>
