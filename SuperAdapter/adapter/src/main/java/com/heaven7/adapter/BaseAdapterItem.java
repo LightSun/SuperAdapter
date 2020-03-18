@@ -8,15 +8,15 @@ import android.view.View;
  * @param <T> the data type
  * @since 2.1.1
  */
-public abstract class BaseAdapterItem<T extends ISelectable> {
+public abstract class BaseAdapterItem<T> {
 
-    private QuickRecycleViewAdapter2<T> adapter;
+    private HeaderFooterAdapter adapter;
     private View mRootView;
 
-    public void setAdapter(QuickRecycleViewAdapter2<T> adapter) {
+    public void setAdapter(HeaderFooterAdapter adapter) {
         this.adapter = adapter;
     }
-    public QuickRecycleViewAdapter2<T> getAdapter() {
+    public HeaderFooterAdapter getAdapter() {
         return adapter;
     }
     public View getRootView() {
@@ -25,10 +25,10 @@ public abstract class BaseAdapterItem<T extends ISelectable> {
     public void setRootView(View mRootView) {
         this.mRootView = mRootView;
     }
-    public AdapterManager<T> getAdapterManager(){
-        return adapter.getAdapterManager();
+    @SuppressWarnings("unchecked")
+    public DiffAdapter<T> getAsDiffAdapter(){
+        return (DiffAdapter<T>) adapter;
     }
-
     /**
      * get the layout id
      * @return the layout id

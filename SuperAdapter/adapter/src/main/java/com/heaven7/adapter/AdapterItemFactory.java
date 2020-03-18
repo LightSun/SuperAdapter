@@ -5,7 +5,7 @@ package com.heaven7.adapter;
  * @param <T> the data type
  * @since 2.1.1
  */
-public interface AdapterItemFactory<T extends ISelectable> {
+public interface AdapterItemFactory<T> {
 
     /**
      * called on create adapter item
