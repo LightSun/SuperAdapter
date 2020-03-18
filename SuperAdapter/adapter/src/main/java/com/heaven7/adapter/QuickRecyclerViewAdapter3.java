@@ -13,9 +13,11 @@ import com.heaven7.adapter.util.ViewHelper2;
 import java.util.List;
 
 /**
- * the adapter just wrap {@linkplain BaseAdapterItem}. help to fast move old codes.
+ * the adapter which use {@linkplain BaseAdapterItem} style to do with RecyclerView Adapter.
  * @param <T> the data type
  * @since 2.1.1
+ * @see #setAdapterItemFactory(AdapterItemFactory)
+ * @see BaseAdapterItem
  */
 public class QuickRecyclerViewAdapter3<T extends ISelectable> extends QuickRecycleViewAdapter2<T> {
 
@@ -45,6 +47,13 @@ public class QuickRecyclerViewAdapter3<T extends ISelectable> extends QuickRecyc
             item.setAdapter(this);
         }
     }
+    /**
+     * set adapter item factory
+     * @param factory the factory
+     */
+    public void setAdapterItemFactory(AdapterItemFactory<T> factory) {
+        this.mFactory = factory;
+    }
     @Override
     protected final int getItemLayoutId(int position, T t) {
         if(mBaseItem != null){
@@ -59,11 +68,11 @@ public class QuickRecyclerViewAdapter3<T extends ISelectable> extends QuickRecyc
             if(mIdMap == null){
                 mIdMap = new SparseArrayCompat<>(3);
             }
-            item = mIdMap.get(id.hashCode());
+            item  = mIdMap.get(id.hashCode());
             if(item == null){
                 item = mFactory.createAdapterItem(t);
                 if(item == null){
-                    throw new UnsupportedOperationException("");
+                    throw new UnsupportedOperationException("create Adapter-Item failed.");
                 }
                 mIdMap.put(id.hashCode(), item);
             }
@@ -71,7 +80,7 @@ public class QuickRecyclerViewAdapter3<T extends ISelectable> extends QuickRecyc
             item = mFactory.createAdapterItem(t);
         }
         if(item == null){
-            throw new IllegalStateException("you must provide Adapter item by #onCreateAdapterItem(...)");
+            throw new IllegalStateException("you must provide Adapter-item by #onCreateAdapterItem(...)");
         }
         item.setAdapter(this);
         if(mLayoutMap == null){
@@ -81,11 +90,7 @@ public class QuickRecyclerViewAdapter3<T extends ISelectable> extends QuickRecyc
         return item.getLayoutId();
     }
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-    @Override
-    protected RecyclerView.ViewHolder onCreateViewHolderImpl(HeaderFooterHelper hfHelper, ViewGroup parent, int viewType) {
+    protected final RecyclerView.ViewHolder onCreateViewHolderImpl(HeaderFooterHelper hfHelper, ViewGroup parent, int viewType) {
         if (hfHelper == null || hfHelper.isLayoutIdInRecord(viewType)) {
             BaseAdapterItem<T> item = mBaseItem != null ? mBaseItem : mLayoutMap.get(viewType);
             return new ViewHolder0(LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false),
@@ -112,13 +117,6 @@ public class QuickRecyclerViewAdapter3<T extends ISelectable> extends QuickRecyc
         throw new UnsupportedOperationException("use BaseAdapterItem instead.");
     }
 
-    /**
-     * set adapter item factory
-     * @param factory the factory
-     */
-    public void setAdapterItemFactory(AdapterItemFactory<T> factory) {
-        this.mFactory = factory;
-    }
     private static class ViewHolder0 extends ViewHolder{
         final BaseAdapterItem<?> mAdapterItem;
         public ViewHolder0(View itemView, int layoutId,  BaseAdapterItem<?> item) {

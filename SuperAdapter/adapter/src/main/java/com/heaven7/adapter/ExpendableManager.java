@@ -34,7 +34,7 @@ public final class ExpendableManager<T> implements IExpendableManager<T> {
                     List<?> items = ei.getChildItems();
                     int childIndex = items.indexOf(childItem);
                     if(childIndex >= 0){
-                        index += childIndex;
+                        index += childIndex + 1; //for child need add 1
                         return index;
                     }else {
                         index += items.size();
