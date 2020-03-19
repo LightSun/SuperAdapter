@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
- * the diff adapter which can use sync to async to sync data.
- * <p>
- *     <ul> have multi features.
+ * the diff adapter which can use sync to async to diff sync data.
+ * <p><h3>have multi features:</h3>
+ *     <ul>
  *         <li>Support sync and async diff data. see {@linkplain #setAsyncDiffExecutor(Executor)} and {@linkplain #commit(List, Runnable)}.</li>
  *         <li>Support common {@linkplain Selector}. see {@linkplain #setSelector(Selector)}</li>
  *         <li>Support {@linkplain BaseAdapterItem} to bind data</li>
