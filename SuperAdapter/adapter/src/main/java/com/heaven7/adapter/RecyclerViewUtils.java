@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
  * the util class of RecyclerView
  * Created by heaven7 on 2016/8/11.
  */
-public class RecyclerViewUtils {
+public final class RecyclerViewUtils {
 
     /**
      * return the last visible item position or -1 for unknown LayoutManager.
