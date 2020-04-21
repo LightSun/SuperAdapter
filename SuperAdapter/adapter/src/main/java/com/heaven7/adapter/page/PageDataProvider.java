@@ -3,7 +3,7 @@ package com.heaven7.adapter.page;
 import android.content.Context;
 
 /**
- * the data provider of {@linkplain AbstractPagerAdapter}
+ * the data provider
  * @param <T> the data type
  * @author heaven7
  * @since 2.1.2
