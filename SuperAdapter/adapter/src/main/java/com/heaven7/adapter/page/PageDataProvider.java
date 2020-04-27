@@ -13,6 +13,10 @@ public abstract class PageDataProvider<T> extends BasePageProvider{
     public PageDataProvider(Context context) {
         super(context);
     }
+
+    public int getItemCount(){
+        return Integer.MAX_VALUE;
+    }
     /**
      * get the real position actually
      * @param position the position

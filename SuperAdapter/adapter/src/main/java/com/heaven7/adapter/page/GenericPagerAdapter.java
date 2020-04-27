@@ -61,7 +61,7 @@ public class GenericPagerAdapter<T> extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return Integer.MAX_VALUE;
+        return mDataProvider.getItemCount();
     }
 
     @Override
