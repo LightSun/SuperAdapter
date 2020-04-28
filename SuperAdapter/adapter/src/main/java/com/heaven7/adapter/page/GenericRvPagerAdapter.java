@@ -18,7 +18,8 @@ import androidx.viewpager2.adapter.StatefulAdapter;
  * @param <T> the data type
  * @since 2.1.2
  */
-public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IPageAdapter, StatefulAdapter {
+public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IPageAdapter,
+        StatefulAdapter, BasePageProvider.PageNotifier {
 
     private final PageDataProvider<T> mDataProvider;
     private final PageViewProvider<T> mViewProvider;
@@ -26,6 +27,9 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
 
     @SuppressWarnings("unchecked")
     public GenericRvPagerAdapter(PageDataProvider<? extends T> dataProvider, PageViewProvider<? extends T> viewProvider, boolean mLoop) {
+        dataProvider.setPageNotifier(this);
+        viewProvider.setPageNotifier(this);
+
         this.mDataProvider = (PageDataProvider<T>) dataProvider;
         this.mViewProvider = (PageViewProvider<T>) viewProvider;
         this.mLoop = mLoop;

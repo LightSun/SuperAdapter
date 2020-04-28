@@ -15,7 +15,6 @@ public abstract class PageViewProvider<T> extends BasePageProvider{
     public PageViewProvider(Context context) {
         super(context);
     }
-
     /**
      * called this to determinate if override the default page width.
      * @return true if need. default is false.

@@ -13,7 +13,6 @@ public abstract class PageDataProvider<T> extends BasePageProvider{
     public PageDataProvider(Context context) {
         super(context);
     }
-
     /**
      * get the real item count.
      * @return the item count.

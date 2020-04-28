@@ -19,7 +19,7 @@ import com.heaven7.memory.util.Cacher;
  * @since 2.1.2
  * @author heaven7
  */
-public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter {
+public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter, BasePageProvider.PageNotifier {
 
     private final Cacher<View, ItemViewContext> mCacher;
     private final PageDataProvider<T> mDataProvider;
@@ -43,6 +43,8 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
     @SuppressWarnings("unchecked")
     public GenericPagerAdapter(PageDataProvider<? extends T> dataProvider, PageViewProvider<? extends T> viewProvider,
                                boolean loop, int maxPoolSize) {
+        dataProvider.setPageNotifier(this);
+        viewProvider.setPageNotifier(this);
         this.mDataProvider = (PageDataProvider<T>) dataProvider;
         this.mViewProvider = (PageViewProvider<T>) viewProvider;
         this.mLoop = loop;

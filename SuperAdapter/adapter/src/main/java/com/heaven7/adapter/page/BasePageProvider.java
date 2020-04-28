@@ -1,6 +1,5 @@
 package com.heaven7.adapter.page;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
 
@@ -14,13 +13,26 @@ import androidx.annotation.Nullable;
 public abstract class BasePageProvider {
 
     private final Context context;
+    private PageNotifier notifier;
 
     public BasePageProvider(Context context) {
         this.context = context;
     }
 
+    public void setPageNotifier(PageNotifier notifier) {
+        this.notifier = notifier;
+    }
+
+    public PageNotifier getPageNotifier(){
+        return notifier;
+    }
+
     public Context getContext() {
         return context;
+    }
+
+    public void notifyDataSetChanged(){
+        notifier.notifyDataSetChanged();
     }
 
     /**
@@ -48,5 +60,9 @@ public abstract class BasePageProvider {
      * @param loader A ClassLoader that should be used to instantiate any restored objects
      */
     public void restoreState(@Nullable Parcelable state, @Nullable ClassLoader loader) {
+    }
+
+    public interface PageNotifier{
+        void notifyDataSetChanged();
     }
 }
