@@ -1,6 +1,7 @@
 package com.heaven7.adapter.page;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
@@ -18,20 +19,20 @@ import com.heaven7.memory.util.Cacher;
  * @since 2.1.2
  * @author heaven7
  */
-public class GenericPagerAdapter<T> extends PagerAdapter {
+public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter{
 
     private final Cacher<View, ItemViewContext> mCacher;
     private final PageDataProvider<T> mDataProvider;
     private final PageViewProvider<T> mViewProvider;
+    private final boolean mLoop;
 
     /**
      * create page adapter by default pool size
      * @param viewProvider the view provider
      * @param dataProvider the data provider
      */
-    public GenericPagerAdapter(PageViewProvider<? extends T> viewProvider,
-                                PageDataProvider<? extends T> dataProvider) {
-        this(viewProvider, dataProvider, 10);
+    public GenericPagerAdapter(PageDataProvider<? extends T> dataProvider, PageViewProvider<? extends T> viewProvider, boolean loop) {
+        this(dataProvider, viewProvider, loop, 8);
     }
     /**
      * create page adapter by target data provider and view provider
@@ -40,10 +41,11 @@ public class GenericPagerAdapter<T> extends PagerAdapter {
      * @param maxPoolSize the max pool size of view
      */
     @SuppressWarnings("unchecked")
-    public GenericPagerAdapter(PageViewProvider<? extends T> viewProvider,
-                                PageDataProvider<? extends T> dataProvider, int maxPoolSize) {
+    public GenericPagerAdapter(PageDataProvider<? extends T> dataProvider, PageViewProvider<? extends T> viewProvider,
+                               boolean loop, int maxPoolSize) {
         this.mDataProvider = (PageDataProvider<T>) dataProvider;
         this.mViewProvider = (PageViewProvider<T>) viewProvider;
+        this.mLoop = loop;
         this.mCacher = new Cacher<View, ItemViewContext>(maxPoolSize) {
             @Override @SuppressWarnings("unchecked")
             public View create(ItemViewContext tvContext) {
@@ -51,6 +53,7 @@ public class GenericPagerAdapter<T> extends PagerAdapter {
                         tvContext.realPosition, (T)tvContext.data);
             }
         };
+        onCreate(dataProvider.getContext());
     }
     public PageDataProvider<T> getDataProvider(){
         return mDataProvider;
@@ -61,7 +64,7 @@ public class GenericPagerAdapter<T> extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return mDataProvider.getItemCount();
+        return mLoop ? Integer.MAX_VALUE : mDataProvider.getItemCount();
     }
 
     @Override
@@ -136,10 +139,15 @@ public class GenericPagerAdapter<T> extends PagerAdapter {
     public void finishUpdate(@NonNull ViewGroup container) {
         super.finishUpdate(container);
     }*/
+    @Override
+    public void onCreate(Context ac) {
+
+    }
     /**
      * often should called from {@linkplain Activity#onDestroy()}
      */
-    public void destroy(){
+    @Override
+    public void onDestroy(Context ac) {
         mDataProvider.onDestroy();
         mViewProvider.onDestroy();
     }

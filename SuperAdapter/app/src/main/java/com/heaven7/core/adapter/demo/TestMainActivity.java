@@ -15,6 +15,9 @@ public class TestMainActivity extends AbsMainActivity {
         list.add(new ActivityInfo(TestCountDownActivity.class));
         list.add(new ActivityInfo(TestAdapterItemActivity.class));
         list.add(new ActivityInfo(TestMultiAdapterItemActivity.class));
+
+        list.add(new ActivityInfo(TestViewPagerActivity.class));
+        list.add(new ActivityInfo(TestViewPager2Activity.class));
     }
 
 

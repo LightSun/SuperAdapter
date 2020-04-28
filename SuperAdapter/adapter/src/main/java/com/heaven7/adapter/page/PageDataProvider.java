@@ -14,15 +14,19 @@ public abstract class PageDataProvider<T> extends BasePageProvider{
         super(context);
     }
 
-    public int getItemCount(){
-        return Integer.MAX_VALUE;
-    }
+    /**
+     * get the real item count.
+     * @return the item count.
+     */
+    public abstract int getItemCount();
     /**
      * get the real position actually
      * @param position the position
      * @return the real position for input position
      */
-    public abstract int getPositionActually(int position);
+    public int getPositionActually(int position){
+        return position % getItemCount();
+    }
 
     /**
      * get the item data from target position, which is from {@linkplain #getPositionActually(int)}

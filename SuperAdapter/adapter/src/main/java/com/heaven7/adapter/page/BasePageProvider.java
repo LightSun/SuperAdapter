@@ -1,5 +1,6 @@
 package com.heaven7.adapter.page;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Parcelable;
 
@@ -21,10 +22,13 @@ public abstract class BasePageProvider {
     public Context getContext() {
         return context;
     }
+
     /**
      * called on destroy
      */
-    public abstract void onDestroy();
+    public void onDestroy(){
+
+    }
 
     /**
      * Save any instance state associated with this adapter and its pages that should be
@@ -45,5 +49,4 @@ public abstract class BasePageProvider {
      */
     public void restoreState(@Nullable Parcelable state, @Nullable ClassLoader loader) {
     }
-
 }

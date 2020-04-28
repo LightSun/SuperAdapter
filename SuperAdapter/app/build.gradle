@@ -51,4 +51,8 @@ dependencies {
     implementation project(':adapter')
 
     implementation 'com.heaven7.java.pc:Produce-consume:1.0.0'
+    implementation("androidx.viewpager2:viewpager2:+")
+
+    implementation ("com.github.bumptech.glide:glide:4.11.0")
+    annotationProcessor "com.github.bumptech.glide:compiler:4.11.0"
 }

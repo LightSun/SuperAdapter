@@ -62,6 +62,8 @@ public abstract class PageViewProvider<T> extends BasePageProvider{
      * @param realPosition the real position . see {@linkplain PageDataProvider#getPositionActually(int)}
      * @param data the item
      */
-    public abstract void onDestroyItemView(View v, int position, int realPosition,T data);
+    public void onDestroyItemView(View v, int position, int realPosition,T data){
+
+    }
 
 }
