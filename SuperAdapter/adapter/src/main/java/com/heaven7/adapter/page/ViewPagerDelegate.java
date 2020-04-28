@@ -227,12 +227,10 @@ public abstract class ViewPagerDelegate<V> {
                 view.setLayoutDirection(layoutDirection);
             }
         }
-
         @Override
         public void setPageMargin(int marginPixels) {
 
         }
-
         @Override
         public void setPageMarginDrawable(@Nullable Drawable d) {
         }

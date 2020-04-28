@@ -19,7 +19,7 @@ import com.heaven7.memory.util.Cacher;
  * @since 2.1.2
  * @author heaven7
  */
-public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter{
+public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter {
 
     private final Cacher<View, ItemViewContext> mCacher;
     private final PageDataProvider<T> mDataProvider;
