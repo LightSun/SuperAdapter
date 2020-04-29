@@ -30,7 +30,7 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
      * @param loop if true means the item count is the max of integer. false use {@linkplain PageDataProvider#getItemCount()}.
      */
     public GenericPagerAdapter(PageDataProvider<? extends T> dataProvider, PageViewProvider<? extends T> viewProvider, boolean loop) {
-        this(dataProvider, viewProvider, loop, 8);
+        this(dataProvider, viewProvider, loop, 5);
     }
     /**
      * create page adapter by target data provider and view provider

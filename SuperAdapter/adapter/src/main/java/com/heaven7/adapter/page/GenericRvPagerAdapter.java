@@ -33,7 +33,7 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
      */
     public GenericRvPagerAdapter(PageDataProvider<? extends T> dataProvider, final PageViewProvider<? extends T> viewProvider,
                                  boolean loop) {
-        this(dataProvider, viewProvider, loop, 8);
+        this(dataProvider, viewProvider, loop, 5);
     }
     /**
      * create page adapter by target data provider and view provider
