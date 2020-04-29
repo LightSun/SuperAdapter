@@ -75,7 +75,7 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
         container.removeView(view);
 
         ItemViewContext itemContext = mPageRecycler.obtainItemContext(container, position, index, data);
-        recycle(view, itemContext);
+        recycleItemView(view, itemContext);
         mPageRecycler.recycleItemContext(itemContext);
     }
     @NonNull
@@ -117,7 +117,7 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
      * @param view the view
      * @param context the item context
      */
-    protected void recycle(View view, ItemViewContext context){
+    protected void recycleItemView(View view, ItemViewContext context){
         mPageRecycler.recycleItemView(view, context);
     }
 

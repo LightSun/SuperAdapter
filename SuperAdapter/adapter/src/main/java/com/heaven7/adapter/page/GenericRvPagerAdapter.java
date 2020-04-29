@@ -108,7 +108,7 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
             parent.removeAllViews();
 
             //recycle
-            recycle(child, itemContext);
+            recycleItemView(child, itemContext);
             mPageRecycler.recycleItemContext(itemContext);
         }
     }
@@ -166,7 +166,7 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
      * @param view the view
      * @param context the item context
      */
-    protected void recycle(View view, ItemViewContext context){
+    protected void recycleItemView(View view, ItemViewContext context){
         mPageRecycler.recycleItemView(view, context);
     }
 
