@@ -7,14 +7,14 @@ import android.view.ViewGroup;
  * @since 2.1.2
  * @author heaven7
  */
-/*public*/ class ItemViewContext {
+public class ItemViewContext {
 
-    public final ViewGroup parent;
-    public final int position;
-    public final int realPosition;
-    public final Object data;
+    public ViewGroup parent;
+    public int position;
+    public int realPosition;
+    public Object data;
 
-    /*public*/ ItemViewContext(ViewGroup parent, int position,int realPosition, Object data) {
+    public void set(ViewGroup parent, int position,int realPosition, Object data) {
         this.parent = parent;
         this.position = position;
         this.realPosition = realPosition;
@@ -23,4 +23,8 @@ import android.view.ViewGroup;
     public Context getContext() {
         return parent.getContext();
     }
+    public void reset(){
+        set(null, -1, -1, null);
+    }
+
 }

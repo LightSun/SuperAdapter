@@ -1,6 +1,5 @@
 package com.heaven7.adapter.page;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -11,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
 
-import com.heaven7.memory.util.Cacher;
-
 /**
  * the generic page adapter
  * @param <T> the data type
@@ -21,7 +18,7 @@ import com.heaven7.memory.util.Cacher;
  */
 public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter, BasePageProvider.PageNotifier {
 
-    private final Cacher<View, ItemViewContext> mCacher;
+    private final PageRecycler mPageRecycler;
     private final PageDataProvider<T> mDataProvider;
     private final PageViewProvider<T> mViewProvider;
     private final boolean mLoop;
@@ -48,13 +45,7 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
         this.mDataProvider = (PageDataProvider<T>) dataProvider;
         this.mViewProvider = (PageViewProvider<T>) viewProvider;
         this.mLoop = loop;
-        this.mCacher = new Cacher<View, ItemViewContext>(maxPoolSize) {
-            @Override @SuppressWarnings("unchecked")
-            public View create(ItemViewContext tvContext) {
-                return mViewProvider.createItemView(tvContext.parent, tvContext.position,
-                        tvContext.realPosition, (T)tvContext.data);
-            }
-        };
+        mPageRecycler = new PageRecycler(viewProvider, maxPoolSize);
         onCreate(dataProvider.getContext());
     }
     public PageDataProvider<T> getDataProvider(){
@@ -68,7 +59,6 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
     public int getCount() {
         return mLoop ? Integer.MAX_VALUE : mDataProvider.getItemCount();
     }
-
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
@@ -81,16 +71,23 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
         T data = mDataProvider.getItem(index);
         mViewProvider.onDestroyItemView(view, position, index, data);
         container.removeView(view);
-        mCacher.recycle(view);
+
+        ItemViewContext itemContext = mPageRecycler.obtainItemContext(container, position, index, data);
+        recycle(view, itemContext);
+        mPageRecycler.recycleItemContext(itemContext);
     }
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         int index = mDataProvider.getPositionActually(position);
         T data = mDataProvider.getItem(index);
-        View view = mCacher.obtain(new ItemViewContext(container, position, index, data));
+
+        ItemViewContext itemContext = mPageRecycler.obtainItemContext(container, position, index, data);
+        View view = obtainItemView(itemContext);
         container.addView(view);
         mViewProvider.onBindItemView(view, position, index, data);
+
+        mPageRecycler.recycleItemContext(itemContext);
         return view;
     }
 
@@ -102,6 +99,24 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
             return mViewProvider.getPageWidth(position, index, data);
         }
         return super.getPageWidth(position);
+    }
+
+    /**
+     * called on obtain item view
+     * @param context the item context
+     * @return the item view
+     */
+    protected View obtainItemView(ItemViewContext context){
+        return mPageRecycler.obtainItemView(context);
+    }
+
+    /**
+     * recycle item view
+     * @param view the view
+     * @param context the item context
+     */
+    protected void recycle(View view, ItemViewContext context){
+        mPageRecycler.recycleItemView(view, context);
     }
 
     @Nullable
@@ -146,11 +161,12 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
 
     }
     /**
-     * often should called from {@linkplain Activity#onDestroy()}
+     * often should called from 'Activity/fragment#onDestroy()'.
      */
     @Override
     public void onDestroy(Context ac) {
         mDataProvider.onDestroy();
         mViewProvider.onDestroy();
     }
+
 }

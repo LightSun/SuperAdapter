@@ -1,6 +1,5 @@
 package com.heaven7.adapter.page;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -24,15 +23,22 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
     private final PageDataProvider<T> mDataProvider;
     private final PageViewProvider<T> mViewProvider;
     private final boolean mLoop;
+    private final PageRecycler mPageRecycler;
 
+    public GenericRvPagerAdapter(PageDataProvider<? extends T> dataProvider, final PageViewProvider<? extends T> viewProvider,
+                                 boolean mLoop) {
+        this(dataProvider, viewProvider, mLoop, 8);
+    }
     @SuppressWarnings("unchecked")
-    public GenericRvPagerAdapter(PageDataProvider<? extends T> dataProvider, PageViewProvider<? extends T> viewProvider, boolean mLoop) {
+    public GenericRvPagerAdapter(PageDataProvider<? extends T> dataProvider, final PageViewProvider<? extends T> viewProvider,
+                                 boolean mLoop, int maxPooSize) {
         dataProvider.setPageNotifier(this);
         viewProvider.setPageNotifier(this);
 
         this.mDataProvider = (PageDataProvider<T>) dataProvider;
         this.mViewProvider = (PageViewProvider<T>) viewProvider;
         this.mLoop = mLoop;
+        this.mPageRecycler = new PageRecycler(viewProvider, maxPooSize);
         onCreate(dataProvider.getContext());
     }
     public PageDataProvider<T> getDataProvider(){
@@ -54,7 +60,10 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
         int realPos = mDataProvider.getPositionActually(position);
         T item = mDataProvider.getItem(realPos);
         ViewGroup parent = (ViewGroup) holder.itemView;
-        View contentView = mViewProvider.createItemView(parent, position, realPos, item);
+
+        ItemViewContext itemContext = mPageRecycler.obtainItemContext(parent, position, realPos, item);
+        View contentView = obtainItemView(itemContext);
+        mPageRecycler.recycleItemContext(itemContext);
 
         parent.removeAllViews();
         parent.addView(contentView);
@@ -79,8 +88,15 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
             int position = holder.getLayoutPosition();
             int realPos = mDataProvider.getPositionActually(position);
             T item = mDataProvider.getItem(realPos);
+            ItemViewContext itemContext = mPageRecycler.obtainItemContext(parent, position, realPos, item);
+
             View child = parent.getChildAt(0);
             mViewProvider.onDestroyItemView(child, position, realPos, item);
+            parent.removeAllViews();
+
+            //recycle
+            recycle(child, itemContext);
+            mPageRecycler.recycleItemContext(itemContext);
         }
     }
     @Override
@@ -88,7 +104,7 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
 
     }
     /**
-     * often should called from {@linkplain Activity#onDestroy()}
+     * often should called from 'Activity/fragment#onDestroy()'.
      */
     @Override
     public void onDestroy(Context ac) {
@@ -123,4 +139,22 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
             mViewProvider.restoreState(vp, null);
         }
     }
+    /**
+     * called on obtain item view
+     * @param context the item context
+     * @return the item view
+     */
+    protected View obtainItemView(ItemViewContext context){
+        return mPageRecycler.obtainItemView(context);
+    }
+
+    /**
+     * recycle item view
+     * @param view the view
+     * @param context the item context
+     */
+    protected void recycle(View view, ItemViewContext context){
+        mPageRecycler.recycleItemView(view, context);
+    }
+
 }
