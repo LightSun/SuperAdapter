@@ -27,6 +27,7 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
      * create page adapter by default pool size
      * @param viewProvider the view provider
      * @param dataProvider the data provider
+     * @param loop if true means the item count is the max of integer. false use {@linkplain PageDataProvider#getItemCount()}.
      */
     public GenericPagerAdapter(PageDataProvider<? extends T> dataProvider, PageViewProvider<? extends T> viewProvider, boolean loop) {
         this(dataProvider, viewProvider, loop, 8);
@@ -35,6 +36,7 @@ public class GenericPagerAdapter<T> extends PagerAdapter implements IPageAdapter
      * create page adapter by target data provider and view provider
      * @param viewProvider the view provider
      * @param dataProvider the data provider
+     * @param loop if true means the item count is the max of integer. false use {@linkplain PageDataProvider#getItemCount()}.
      * @param maxPoolSize the max pool size of view
      */
     @SuppressWarnings("unchecked")

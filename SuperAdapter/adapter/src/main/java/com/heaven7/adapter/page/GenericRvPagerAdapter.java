@@ -25,20 +25,33 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
     private final boolean mLoop;
     private final PageRecycler mPageRecycler;
 
+    /**
+     * create page adapter by default pool size
+     * @param viewProvider the view provider
+     * @param dataProvider the data provider
+     * @param loop if true means the item count is the max of integer. false use {@linkplain PageDataProvider#getItemCount()}.
+     */
     public GenericRvPagerAdapter(PageDataProvider<? extends T> dataProvider, final PageViewProvider<? extends T> viewProvider,
-                                 boolean mLoop) {
-        this(dataProvider, viewProvider, mLoop, 8);
+                                 boolean loop) {
+        this(dataProvider, viewProvider, loop, 8);
     }
+    /**
+     * create page adapter by target data provider and view provider
+     * @param viewProvider the view provider
+     * @param dataProvider the data provider
+     * @param loop if true means the item count is the max of integer. false use {@linkplain PageDataProvider#getItemCount()}.
+     * @param maxPoolSize the max pool size of view
+     */
     @SuppressWarnings("unchecked")
     public GenericRvPagerAdapter(PageDataProvider<? extends T> dataProvider, final PageViewProvider<? extends T> viewProvider,
-                                 boolean mLoop, int maxPooSize) {
+                                 boolean loop, int maxPoolSize) {
         dataProvider.setPageNotifier(this);
         viewProvider.setPageNotifier(this);
 
         this.mDataProvider = (PageDataProvider<T>) dataProvider;
         this.mViewProvider = (PageViewProvider<T>) viewProvider;
-        this.mLoop = mLoop;
-        this.mPageRecycler = new PageRecycler(viewProvider, maxPooSize);
+        this.mLoop = loop;
+        this.mPageRecycler = new PageRecycler(viewProvider, maxPoolSize);
         onCreate(dataProvider.getContext());
     }
     public PageDataProvider<T> getDataProvider(){
