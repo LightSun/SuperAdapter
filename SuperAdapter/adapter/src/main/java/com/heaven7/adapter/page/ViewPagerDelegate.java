@@ -1,5 +1,6 @@
 package com.heaven7.adapter.page;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
@@ -8,6 +9,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.Px;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
@@ -33,6 +35,10 @@ public abstract class ViewPagerDelegate<V> {
         this.view = view;
     }
 
+    public V getView() {
+        return view;
+    }
+
     public static ViewPagerDelegate<?> get(View v) {
         if (v instanceof ViewPager) {
             return new PageViewDelegateV1((ViewPager) v);
@@ -48,6 +54,8 @@ public abstract class ViewPagerDelegate<V> {
     public abstract <T> void setAdapter(LifecycleOwner owner, PageDataProvider<? extends T> dataProvider,
                                         PageViewProvider<? extends T> viewDelegate, boolean loop);
 
+    public abstract void removeOnPageChangeListener(WrappedPageChangeListener listener);
+
     public abstract void addOnPageChangListener(WrappedPageChangeListener listener);
 
     public final void addOnPageChangListener(ViewPager.OnPageChangeListener listener) {
@@ -58,11 +66,26 @@ public abstract class ViewPagerDelegate<V> {
         addOnPageChangListener(new WrappedPageChangeListener(listener));
     }
 
+    public final void removeOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
+        removeOnPageChangeListener(new WrappedPageChangeListener(listener));
+    }
+
+    public final void removeOnPageChangeListener(ViewPager2.OnPageChangeCallback listener) {
+        removeOnPageChangeListener(new WrappedPageChangeListener(listener));
+    }
+
     public abstract void setOffscreenPageLimit(int limit);
+
+    public abstract int getCurrentItem();
 
     public abstract void setCurrentItem(int item, boolean smoothScroll);
 
     public abstract void setCurrentItem(int item);
+
+    public abstract boolean beginFakeDrag();
+    public abstract void endFakeDrag();
+    public abstract boolean fakeDragBy(@Px float offsetPxFloat);
+    public abstract boolean isFakeDragging();
 
     public abstract void setPageTransformer(boolean reverseDrawingOrder, @Nullable WrappedPageTransformer transformer);
 
@@ -109,6 +132,25 @@ public abstract class ViewPagerDelegate<V> {
         }
 
         @Override
+        public boolean isFakeDragging() {
+            return view.isFakeDragging();
+        }
+
+        @Override
+        public boolean beginFakeDrag() {
+            return view.beginFakeDrag();
+        }
+        @Override
+        public void endFakeDrag() {
+            view.endFakeDrag();
+        }
+        @Override
+        public boolean fakeDragBy(float offsetPxFloat) {
+            view.fakeDragBy(offsetPxFloat);
+            return true;
+        }
+
+        @Override
         public <T> void setAdapter(LifecycleOwner owner, PageDataProvider<? extends T> dataProvider,
                                    PageViewProvider<? extends T> viewDelegate, boolean loop) {
             setAdapter(owner, new GenericPagerAdapter<T>(dataProvider, viewDelegate, loop));
@@ -125,6 +167,11 @@ public abstract class ViewPagerDelegate<V> {
         }
 
         @Override
+        public void removeOnPageChangeListener(WrappedPageChangeListener listener) {
+            view.removeOnPageChangeListener(listener);
+        }
+
+        @Override
         public void addOnPageChangListener(WrappedPageChangeListener listener) {
             view.addOnPageChangeListener(listener);
         }
@@ -132,6 +179,11 @@ public abstract class ViewPagerDelegate<V> {
         @Override
         public void setOffscreenPageLimit(int limit) {
             view.setOffscreenPageLimit(limit);
+        }
+
+        @Override
+        public int getCurrentItem() {
+            return view.getCurrentItem();
         }
 
         @Override
@@ -180,6 +232,23 @@ public abstract class ViewPagerDelegate<V> {
         }
 
         @Override
+        public boolean isFakeDragging() {
+            return view.isFakeDragging();
+        }
+
+        @Override
+        public boolean beginFakeDrag() {
+            return view.beginFakeDrag();
+        }
+        @Override
+        public void endFakeDrag() {
+            view.endFakeDrag();
+        }
+        @Override
+        public boolean fakeDragBy(float offsetPxFloat) {
+            return view.fakeDragBy(offsetPxFloat);
+        }
+        @Override
         public <T> void setAdapter(LifecycleOwner owner, PageDataProvider<? extends T> dataProvider,
                                    PageViewProvider<? extends T> viewDelegate, boolean loop) {
             setAdapter(owner, new GenericRvPagerAdapter<T>(dataProvider, viewDelegate, loop));
@@ -199,6 +268,10 @@ public abstract class ViewPagerDelegate<V> {
         public void addOnPageChangListener(WrappedPageChangeListener listener) {
             view.registerOnPageChangeCallback(listener);
         }
+        @Override
+        public void removeOnPageChangeListener(WrappedPageChangeListener listener) {
+            view.unregisterOnPageChangeCallback(listener);
+        }
 
         @Override
         public void setOffscreenPageLimit(int limit) {
@@ -214,7 +287,10 @@ public abstract class ViewPagerDelegate<V> {
         public void setCurrentItem(int item) {
             view.setCurrentItem(item);
         }
-
+        @Override
+        public int getCurrentItem() {
+            return view.getCurrentItem();
+        }
         @Override
         public void setPageTransformer(boolean reverseDrawingOrder, @Nullable WrappedPageTransformer transformer) {
             view.setPageTransformer(transformer);

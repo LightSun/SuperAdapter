@@ -4,6 +4,8 @@ import androidx.annotation.Px;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.util.Arrays;
+
 /**
  * the page change wrapper which used to adapt OnPageChangeListener and OnPageChangeCallback.
  *
@@ -32,6 +34,13 @@ public class WrappedPageChangeListener extends ViewPager2.OnPageChangeCallback i
     private WrappedPageChangeListener(ViewPager2.OnPageChangeCallback callback, ViewPager.OnPageChangeListener listener) {
         this.callback = callback;
         this.listener = listener;
+    }
+
+    public ViewPager2.OnPageChangeCallback getOnPageChangeCallback() {
+        return callback;
+    }
+    public ViewPager.OnPageChangeListener getOnPageChangeListener() {
+        return listener;
     }
 
     /**
@@ -84,5 +93,29 @@ public class WrappedPageChangeListener extends ViewPager2.OnPageChangeCallback i
         } else if (listener != null) {
             listener.onPageScrollStateChanged(state);
         }
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if(o instanceof WrappedPageChangeListener){
+            WrappedPageChangeListener that = (WrappedPageChangeListener) o;
+            return equals(callback, that.callback) &&
+                    equals(listener, that.listener);
+        } else if(o instanceof ViewPager.OnPageChangeListener){
+            return equals(getOnPageChangeListener(), o);
+        }else if(o instanceof ViewPager2.OnPageChangeCallback){
+            return equals(getOnPageChangeCallback(), o);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(new Object[]{callback, listener});
+    }
+
+    private static boolean equals(Object a, Object b) {
+        return (a == b) || (a != null && a.equals(b));
     }
 }

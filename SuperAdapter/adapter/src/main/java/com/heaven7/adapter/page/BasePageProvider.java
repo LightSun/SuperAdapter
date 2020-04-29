@@ -32,7 +32,9 @@ public abstract class BasePageProvider {
     }
 
     public void notifyDataSetChanged(){
-        notifier.notifyDataSetChanged();
+        if(notifier != null){
+            notifier.notifyDataSetChanged();
+        }
     }
 
     /**
