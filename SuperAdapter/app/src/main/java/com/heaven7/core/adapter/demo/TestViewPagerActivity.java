@@ -23,6 +23,18 @@ public class TestViewPagerActivity extends AppCompatActivity {
     private static final String[] ARRAY = {
             "http://img5.imgtn.bdimg.com/it/u=3050590552,1445108891&fm=11&gp=0.jpg",
             "http://img5.imgtn.bdimg.com/it/u=3356601016,43598563&fm=26&gp=0.jpg",
+            "http://hbimg.b0.upaiyun.com/5507f33cdf77233ec4816d8e57407517a0f2477925557-FGnaJI_fw658",
+
+            "http://img5.imgtn.bdimg.com/it/u=3050590552,1445108891&fm=11&gp=0.jpg",
+            "http://img5.imgtn.bdimg.com/it/u=3356601016,43598563&fm=26&gp=0.jpg",
+            "http://hbimg.b0.upaiyun.com/5507f33cdf77233ec4816d8e57407517a0f2477925557-FGnaJI_fw658",
+
+            "http://img5.imgtn.bdimg.com/it/u=3050590552,1445108891&fm=11&gp=0.jpg",
+            "http://img5.imgtn.bdimg.com/it/u=3356601016,43598563&fm=26&gp=0.jpg",
+            "http://hbimg.b0.upaiyun.com/5507f33cdf77233ec4816d8e57407517a0f2477925557-FGnaJI_fw658",
+
+            "http://img5.imgtn.bdimg.com/it/u=3050590552,1445108891&fm=11&gp=0.jpg",
+            "http://img5.imgtn.bdimg.com/it/u=3356601016,43598563&fm=26&gp=0.jpg",
             "http://hbimg.b0.upaiyun.com/5507f33cdf77233ec4816d8e57407517a0f2477925557-FGnaJI_fw658"
     };
 
@@ -33,7 +45,7 @@ public class TestViewPagerActivity extends AppCompatActivity {
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         ViewPagerDelegate.get(getPagerView()).setAdapter(this, new DataProvider0(this),
-                new ViewProvider0(this), true);
+                new ViewProvider0(this), false);
     }
 
     protected View getPagerView(){

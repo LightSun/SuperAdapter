@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.adapter.StatefulAdapter;
 
+import com.heaven7.core.util.Logger;
+
 /**
  * the page adapter for ViewPager2
  * @param <T> the data type
@@ -24,6 +26,8 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
     private final PageViewProvider<T> mViewProvider;
     private final boolean mLoop;
     private final PageRecycler mPageRecycler;
+
+    private boolean mDebug;
 
     /**
      * create page adapter by default pool size
@@ -54,6 +58,9 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
         this.mPageRecycler = new PageRecycler(viewProvider, maxPoolSize);
         onCreate(dataProvider.getContext());
     }
+    public void setDebug(boolean debug){
+        this.mDebug = debug;
+    }
     public PageDataProvider<T> getDataProvider(){
         return mDataProvider;
     }
@@ -70,6 +77,7 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
     }
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        __log("onBindViewHolder", holder);
         int realPos = mDataProvider.getPositionActually(position);
         T item = mDataProvider.getItem(realPos);
         ViewGroup parent = (ViewGroup) holder.itemView;
@@ -96,7 +104,39 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
     @Override
     public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
+        __log("onViewDetachedFromWindow", holder);
         ViewGroup parent = (ViewGroup) holder.itemView;
+        if(parent.getChildCount() > 0){
+            int position = holder.getLayoutPosition();
+            int realPos = mDataProvider.getPositionActually(position);
+            T item = mDataProvider.getItem(realPos);
+
+            View child = parent.getChildAt(0);
+            mViewProvider.onItemViewDetachedFromWindow(child, position, realPos, item);
+        }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull final RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        __log("onViewAttachedToWindow", holder);
+        //view page2 was update position on idle. so position may diff
+        ViewGroup parent = (ViewGroup) holder.itemView;
+        if(parent.getChildCount() > 0){
+            int position = holder.getLayoutPosition();
+            int realPos = mDataProvider.getPositionActually(position);
+            T item = mDataProvider.getItem(realPos);
+
+            View child = parent.getChildAt(0);
+            mViewProvider.onItemViewAttachedToWindow(child, position, realPos, item);
+        }
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        __log("onViewRecycled", holder);
+         ViewGroup parent = (ViewGroup) holder.itemView;
         if(parent.getChildCount() > 0){
             int position = holder.getLayoutPosition();
             int realPos = mDataProvider.getPositionActually(position);
@@ -112,6 +152,14 @@ public class GenericRvPagerAdapter<T> extends RecyclerView.Adapter<RecyclerView.
             mPageRecycler.recycleItemContext(itemContext);
         }
     }
+
+    private void __log(String m,RecyclerView.ViewHolder holder){
+        if(mDebug){
+            Logger.d("RvAdapter", m, String.format("layoutPos = %d, adapterPos = %d",
+                    holder.getLayoutPosition(), holder.getAdapterPosition()));
+        }
+    }
+
     @Override
     public void onCreate(Context ac) {
 

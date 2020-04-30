@@ -15,6 +15,7 @@ public class TestViewPager2Activity extends TestViewPagerActivity {
     protected View getPagerView() {
         ViewPager2 vp = (ViewPager2) super.getPagerView();
         vp.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
+        vp.setOffscreenPageLimit(1);
         return vp;
     }
 }

@@ -17,6 +17,7 @@ public abstract class PageViewProvider<T> extends BasePageProvider{
     }
     /**
      * called this to determinate if override the default page width.
+     * <p>this is only used for ViewPager</p>
      * @return true if need. default is false.
      * @see #getPageWidth(int, int, Object)
      */
@@ -26,7 +27,7 @@ public abstract class PageViewProvider<T> extends BasePageProvider{
     /**
      * Returns the proportional width of a given page as a percentage of the
      * ViewPager's measured width from (0.f-1.f]
-     *
+     *<p>this is only used for ViewPager</p>
      * @param position The position of the page requested
      * @param realPosition the real position. see {@linkplain PageDataProvider#getPositionActually(int)}
      * @param data the data
@@ -65,4 +66,26 @@ public abstract class PageViewProvider<T> extends BasePageProvider{
 
     }
 
+    /**
+     * called item view attached to window.
+     * <p>this is only used for ViewPager2</p>
+     * @param v the view which is create by {@linkplain #createItemView(ViewGroup, int,int, Object)}
+     * @param position the position
+     * @param realPosition the real position . see {@linkplain PageDataProvider#getPositionActually(int)}
+     * @param data the data
+     */
+    public void onItemViewAttachedToWindow(View v, int position, int realPosition,T data){
+
+    }
+    /**
+     * called item view detached from window
+     * <p>this is only used for ViewPager2</p>
+     * @param v the view which is create by {@linkplain #createItemView(ViewGroup, int,int, Object)}
+     * @param position the position
+     * @param realPosition the real position . see {@linkplain PageDataProvider#getPositionActually(int)}
+     * @param data the data
+     */
+    public void onItemViewDetachedFromWindow(View v, int position, int realPosition,T data){
+
+    }
 }

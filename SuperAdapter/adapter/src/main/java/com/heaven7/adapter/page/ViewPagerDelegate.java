@@ -1,6 +1,5 @@
 package com.heaven7.adapter.page;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
