@@ -27,6 +27,7 @@ import java.util.List;
  */
 public class BaseFragmentPagerAdapter extends PagerAdapter {
 
+    public static final String KEY_FRAG_TAG = "@#$__frag_tag";
     private static final String TAG = "FragmentStatePagerAdapter";
     private static final boolean DEBUG = false;
 
@@ -343,6 +344,11 @@ public class BaseFragmentPagerAdapter extends PagerAdapter {
 
         Fragment fragment = Fragment.instantiate(container.getContext(),
                 data.fragmentClass.getName(), data.bundle);
+        //frag tag
+        String tag = null;
+        if(data.bundle != null && data.bundle.containsKey(KEY_FRAG_TAG)){
+            tag = data.bundle.getString(KEY_FRAG_TAG);
+        }
         item = new ItemData(data, fragment, position);
         mCache.put(data, item);
         if (mCurTransaction == null) {
@@ -357,7 +363,7 @@ public class BaseFragmentPagerAdapter extends PagerAdapter {
         }
         fragment.setMenuVisibility(false);
         fragment.setUserVisibleHint(false);
-        mCurTransaction.add(container.getId(), fragment);
+        mCurTransaction.add(container.getId(), fragment, tag);
         return item;
     }
 
