@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.heaven7.adapter.util.CommonItemDecoration;
 import com.heaven7.adapter.util.ViewHelper2;
 import com.heaven7.core.util.ViewHelper;
 
@@ -29,7 +30,8 @@ import java.util.List;
  */
 public class QuickRecycleViewAdapter2<T extends ISelectable>  extends HeaderFooterAdapter
         implements AdapterManager.IAdapterManagerCallback, AdapterManager.IHeaderFooterManager,
-        AdapterManager.IAdapterManagerCallback2, HeaderFooterAdapter.Callback  {
+        AdapterManager.IAdapterManagerCallback2, HeaderFooterAdapter.Callback ,
+        CommonItemDecoration.AdapterDelegate {
 
     private int mLayoutId = 0;
     private AdapterManager<T> mAdapterManager;
@@ -89,6 +91,12 @@ public class QuickRecycleViewAdapter2<T extends ISelectable>  extends HeaderFoot
         setCallback(this);
         onFinalInit();
     }
+
+    @Override
+    public List getListItems() {
+        return getAdapterManager().getItems();
+    }
+
     @Override
     public int getActuallyItemSize() {
         return mAdapterManager.getItemSize();

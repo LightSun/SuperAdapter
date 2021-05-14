@@ -50,7 +50,7 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
         List list = null;
         if(adapter instanceof AdapterDelegate){
             ad = (AdapterDelegate) adapter;
-            headerCount = ad.getHeaderCount();
+            headerCount = ad.getHeaderSize();
             list = ad.getListItems();
             //only need once
             if(position == 0){
@@ -77,7 +77,7 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
     public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         RecyclerView.Adapter adapter = parent.getAdapter();
         if(mDrawCallback != null && adapter instanceof AdapterDelegate){
-            final int headerCount = ((AdapterDelegate) adapter).getHeaderCount();
+            final int headerCount = ((AdapterDelegate) adapter).getHeaderSize();
             final List datas = ((AdapterDelegate) adapter).getListItems();
 
             int childCount = parent.getChildCount();
@@ -96,7 +96,7 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
     public void onDrawOver(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         RecyclerView.Adapter adapter = parent.getAdapter();
         if(mDrawCallback != null && adapter instanceof AdapterDelegate){
-            final int headerCount = ((AdapterDelegate) adapter).getHeaderCount();
+            final int headerCount = ((AdapterDelegate) adapter).getHeaderSize();
             final List datas = ((AdapterDelegate) adapter).getListItems();
 
             int childCount = parent.getChildCount();
@@ -125,7 +125,7 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
          * get the header count
          * @return the header count
          */
-        int getHeaderCount();
+        int getHeaderSize();
     }
 
     /**
