@@ -63,7 +63,8 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
         }
         if(position >= headerCount){
             if(ad != null && mShouldPadPositions.contains(position - headerCount)
-                    && mCallback.getPadding(list.get(position - headerCount), mTempRect)){
+                    && mCallback.getPadding(mTempRect, headerCount, position - headerCount,
+                    list.get(position - headerCount), list)){
                 outRect.set(mTempRect);
             }else {
                 outRect.set(mItemPaddingRect);
@@ -145,11 +146,14 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
 
         /**
          * get the item padding
+         * @param out the out rect
+         * @param headerCount the headerCount
+         * @param index the index,  exclude header
          * @param item the item
-         * @param out the padding out rect
+         * @param items the items
          * @return true if success.
          */
-        boolean getPadding(Object item, Rect out);
+        boolean getPadding(Rect out, int headerCount, int index, Object item, List items);
     }
 
     /**
