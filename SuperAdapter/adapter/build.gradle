@@ -29,7 +29,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation('com.github.LightSun:util-v1:1.1.7-beta-x'){
+    implementation('com.github.LightSun:util-v1:1.1.7-x'){
         exclude group: 'com.android.support'
         exclude group: 'com.heaven7.android.component'
     }
