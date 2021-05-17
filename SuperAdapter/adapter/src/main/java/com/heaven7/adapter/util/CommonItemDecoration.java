@@ -55,7 +55,7 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
             //only need once
             if(position == 0){
                 for (int i = 0 ; i < list.size() ; i ++){
-                    if(mCallback.shouldPadding(headerCount, i, list.get(i), list)){
+                    if(mCallback.shouldPadding(this, headerCount, i, list.get(i), list)){
                         mShouldPadPositions.add(i);
                     }
                 }
@@ -63,7 +63,7 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
         }
         if(position >= headerCount){
             if(ad != null && mShouldPadPositions.contains(position - headerCount)
-                    && mCallback.getPadding(mTempRect, headerCount, position - headerCount,
+                    && mCallback.getPadding(this, mTempRect, headerCount, position - headerCount,
                     list.get(position - headerCount), list)){
                 outRect.set(mTempRect);
             }else {
@@ -87,8 +87,8 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
                 int pos = parent.getChildAdapterPosition(child);
                 if(pos >= headerCount){
                     Object obj = datas.get(pos - headerCount);
-                    if(mDrawCallback.shouldDraw(headerCount, pos- headerCount, obj, datas)){
-                        mDrawCallback.onDraw(c, child, headerCount, pos- headerCount, obj, datas);
+                    if(mDrawCallback.shouldDraw(this, headerCount, pos- headerCount, obj, datas)){
+                        mDrawCallback.onDraw(this, c, child, headerCount, pos- headerCount, obj, datas);
                     }
                 }
             }
@@ -106,8 +106,8 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
                 int pos = parent.getChildAdapterPosition(child);
                 if(pos >= headerCount){
                     Object obj = datas.get(pos - headerCount);
-                    if(mDrawCallback.shouldDrawOVer(headerCount, pos- headerCount, obj,  datas)){
-                        mDrawCallback.onDrawOver(c, child, headerCount, pos- headerCount, obj, datas);
+                    if(mDrawCallback.shouldDrawOVer(this, headerCount, pos- headerCount, obj,  datas)){
+                        mDrawCallback.onDrawOver(this, c, child, headerCount, pos- headerCount, obj, datas);
                     }
                 }
             }
@@ -136,16 +136,19 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
         /**
          * indicate whether to padding item or not.
          *
+         * @param decoration the item decoration
          * @param headerCount the header count
          * @param index the item index, exclude header
          * @param item the item
          * @param items the items
          * @return true if should padding
          */
-        boolean shouldPadding(int headerCount, int index, Object item, List items);
+        boolean shouldPadding(CommonItemDecoration decoration, int headerCount, int index, Object item, List items);
 
         /**
          * get the item padding
+         *
+         * @param decoration the item decoration
          * @param out the out rect
          * @param headerCount the headerCount
          * @param index the index,  exclude header
@@ -153,7 +156,7 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
          * @param items the items
          * @return true if success.
          */
-        boolean getPadding(Rect out, int headerCount, int index, Object item, List items);
+        boolean getPadding(CommonItemDecoration decoration, Rect out, int headerCount, int index, Object item, List items);
     }
 
     /**
@@ -163,27 +166,32 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
         /**
          * indicate whether to draw extra for item or not.
          *
+         *
+         * @param decoration the item decoration
          * @param headerCount the header count
          * @param index the item index, exclude header
          * @param item the item
          * @param items the items
          * @return true if should padding
          */
-        boolean shouldDraw(int headerCount, int index, Object item, List items);
+        boolean shouldDraw(CommonItemDecoration decoration, int headerCount, int index, Object item, List items);
 
         /**
          * indicate whether to draw over extra for item or not.
          *
+         *
+         * @param decoration the item decoration
          * @param headerCount the header count
          * @param index the item index, exclude header
          * @param item the item
          * @param items the items
          * @return true if should padding
          */
-        boolean shouldDrawOVer(int headerCount, int index, Object item, List items);
+        boolean shouldDrawOVer(CommonItemDecoration decoration, int headerCount, int index, Object item, List items);
 
         /**
          *  draw extra for child view.
+         * @param decoration the item decoration
          * @param c the canvas
          * @param child the child view
          * @param headerCount the header count
@@ -191,18 +199,19 @@ public class CommonItemDecoration extends RecyclerView.ItemDecoration {
          * @param item the item
          * @param items the items
          */
-        void onDraw(Canvas c, View child, int headerCount, int index, Object item, List items);
+        void onDraw(CommonItemDecoration decoration, Canvas c, View child, int headerCount, int index, Object item, List items);
 
 
         /**
          * draw over extra for child view.
+         * @param decoration the item decoration
          * @param c the canvas
          * @param child the child view
          * @param headerCount the header count
          * @param index the item index, exclude header
          * @param item the item
-         *  @param items the items
+         * @param items the items
          */
-        void onDrawOver(Canvas c, View child, int headerCount, int index, Object item, List items);
+        void onDrawOver(CommonItemDecoration decoration, Canvas c, View child, int headerCount, int index, Object item, List items);
     }
 }
